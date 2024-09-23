@@ -1,17 +1,25 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'select-picker';
-
+import { StyleSheet, View } from 'react-native';
+import { CurrencyPickerComponent } from 'select-picker';
+import currency from './constants/CommonCurrency.json';
 export default function App() {
-  const [result, setResult] = useState<number | undefined>();
-
-  useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+  const items = Object.values(currency).map(({ name, code, ...data }) => {
+    return {
+      key: code,
+      label: name,
+      value: code,
+      data: data,
+    };
+  });
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <CurrencyPickerComponent
+        items={items}
+        onSelectItem={(item) => {
+          console.log(item);
+        }}
+        darkMode={true}
+      />
     </View>
   );
 }
