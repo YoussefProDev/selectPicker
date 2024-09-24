@@ -1,8 +1,8 @@
-import { CurrencyPickerComponent } from '../index';
+import { SelectPickerComponent } from '../index';
 import * as types from './types';
-declare module '@youssefprodev/rn-currency-picker' {
+declare module 'select-picker' {
   export { types };
-  // Esportazione della classe CurrencyPicker
-  // export class CurrencyPicker extends React.Component<CurrencyPickerProps> {}
-  export { CurrencyPickerComponent };
+  // Esportazione della classe SelectPickerComponent
+  // export class CurrencyPicker extends React.Component<SelectPickerProps> {}
+  export { SelectPickerComponent };
 }

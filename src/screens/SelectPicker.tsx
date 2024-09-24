@@ -3,7 +3,7 @@ import { View, Modal } from 'react-native';
 import { SelectTrigger, SelectModal } from '../components';
 import type { ItemType, SelectPickerProps } from '../types';
 
-export const CurrencyPicker: FC<SelectPickerProps> = ({
+export const SelectPicker: FC<SelectPickerProps> = ({
   items,
   onSelectItem,
   darkMode = false,
@@ -60,32 +60,8 @@ export const CurrencyPicker: FC<SelectPickerProps> = ({
         renderTrigger={renderTrigger}
         disable={disable}
       />
-      {/* <TouchableOpacity
-        disabled={disable}
-        onPress={() => {
-          setVisible(true);
-          onOpen?.();
-        }}
-        style={[Styles.justifyContent, triggerStyle?.container]}
-      >
-        {renderChildren ? (
-          renderChildren
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            <Text
-              style={[Styles.txtCountryName, triggerStyle?.currencyNameStyle]}
-            >
-              {selectItem?.label}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity> */}
-      <Modal visible={visible}>
+
+      <Modal visible={visible} onRequestClose={pickerRef.close}>
         <SelectModal
           items={items}
           onSelectItem={(item: ItemType) => {

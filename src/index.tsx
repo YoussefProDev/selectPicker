@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { CurrencyPicker } from './screens';
+import { SelectPicker } from './screens';
 import { type SelectPickerProps } from './types';
 
 const DEFAULT_OPTIONS = {
@@ -10,7 +10,7 @@ const DEFAULT_OPTIONS = {
   darkMode: false,
 };
 
-export const CurrencyPickerComponent: FC<SelectPickerProps> = (
+export const SelectPickerComponent: FC<SelectPickerProps> = (
   props: SelectPickerProps
 ) => {
   const propsModel = {
@@ -18,5 +18,5 @@ export const CurrencyPickerComponent: FC<SelectPickerProps> = (
     ...props,
   };
 
-  return <CurrencyPicker {...propsModel} />;
+  return <SelectPicker {...propsModel} />;
 };

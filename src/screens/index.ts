@@ -1,1 +1,1 @@
-export * from './CurrencyPicker';
+export * from './SelectPicker';

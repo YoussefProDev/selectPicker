@@ -50,7 +50,7 @@ export const SelectModal: FC<SelectModalProps> = ({
   });
 
   const fuse = new Fuse<ItemType>(
-    itemsList.map((item) => item),
+    items.map((item) => item),
     options
   );
 
@@ -88,34 +88,24 @@ export const SelectModal: FC<SelectModalProps> = ({
     );
   };
 
-  // const renderItem = ({ item, index }: { item: ItemType; index: number }) => {
-  //   const isLastItem = itemsList.length - 1 === index;
-  //   return (
-  //     <TouchableOpacity
-  //       style={{ marginBottom: isLastItem ? 80 : 0 }}
-  //       onPress={() => onSelect(item)}
-  //     >
-  //       {renderItem ? renderItem(item) : renderItemTemplate(item)}
-  //     </TouchableOpacity>
-  //   );
-  // };
-
   const handleFilterChange = (value: string) => {
     setSearch(value);
 
     let listDataFilter: ItemType[] = [];
+
     if (value === '') {
-      listDataFilter = itemsList;
+      listDataFilter = items;
     } else {
       const filteredItems = fuse.search(value);
 
       if (_flashListRef.current)
         _flashListRef.current.scrollToOffset({ offset: 0 });
       filteredItems.forEach((n) => {
-        const item = itemsList.filter((i) => i.key === n.item.key);
+        const item = items.filter((i) => i.key === n.item.key);
         if (item.length > 0 && item?.[0]) listDataFilter.push(item[0]);
       });
     }
+
     setItemsList(listDataFilter);
   };
   const emptyItem = () => (

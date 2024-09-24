@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { CurrencyPickerComponent } from 'select-picker';
+import { SelectPickerComponent } from 'select-picker';
 import currency from './constants/CommonCurrency.json';
 export default function App() {
   const items = Object.values(currency).map(({ name, code, ...data }) => {
@@ -13,12 +13,11 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <CurrencyPickerComponent
+      <SelectPickerComponent
         items={items}
         onSelectItem={(item) => {
           console.log(item);
         }}
-        darkMode={true}
       />
     </View>
   );
