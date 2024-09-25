@@ -28,5 +28,11 @@ export const Styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.black,
   },
+  modalView: {
+    flex: 1,
+    marginTop: height * 0.08,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
   lastItem: { marginBottom: 80 },
 });

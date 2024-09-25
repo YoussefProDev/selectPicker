@@ -1,3 +1,4 @@
+import type { UseDynamicAnimationState } from 'moti';
 import type { TextStyle, ViewStyle } from 'react-native';
 
 // Tipo per i dati della valuta, basato sui valori del JSON delle bandiere
@@ -24,7 +25,7 @@ type ModalStyle = {
 };
 // Props per il componente SelectTrigger
 export type SelectTriggerProps = {
-  open?: () => void;
+  open: () => void;
   selectItem: ItemType | undefined;
   triggerStyle?: TriggerStyle;
   renderTrigger?: (item: ItemType | undefined) => React.ReactNode;
@@ -35,25 +36,27 @@ export type SelectTriggerProps = {
 // Props per il componente SelectModal
 export type SelectModalProps = {
   items: ItemType[];
+  selectItem: ItemType | undefined;
   onSelectItem: (item: ItemType) => void;
   title?: string;
   searchPlaceholder?: string;
   textEmpty?: string;
-  setVisible: (visible: boolean) => void;
+  close: () => void;
   darkMode?: boolean;
   modalStyle?: ModalStyle;
   showCloseButton?: boolean;
   showModalTitle?: boolean;
   renderItem?: (item: ItemType | undefined) => React.ReactNode;
+  modalAnimation: UseDynamicAnimationState<ViewStyle>;
 };
 
-// Riferimento al componente CurrencyPicker per il controllo programmatico
+// Riferimento al componente SelectPicker per il controllo programmatico
 export type SelectPickerRef = {
   open: () => void;
   close: () => void;
 };
 
-// Props per il componente CurrencyPicker
+// Props per il componente SelectPicker
 export type SelectPickerProps = {
   items: ItemType[];
   onSelectItem?: (item: ItemType) => void;

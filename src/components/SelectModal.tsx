@@ -1,12 +1,13 @@
 import { type FC, useEffect, useRef, useState } from 'react';
 import {
-  View,
   TouchableOpacity,
   StatusBar,
   TextInput,
   Text,
   KeyboardAvoidingView,
+  View,
 } from 'react-native';
+import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
 import { Colors, Styles, getStyles } from '../styles';
 import type { SelectModalProps, ItemType } from '../types';
@@ -18,11 +19,13 @@ export const SelectModal: FC<SelectModalProps> = ({
   title = 'Select',
   searchPlaceholder = 'Search',
   textEmpty = 'Empty data',
-  setVisible,
   darkMode = false,
   modalStyle,
   showCloseButton = true,
   showModalTitle = true,
+  selectItem,
+  close,
+  modalAnimation,
 }) => {
   const [search, setSearch] = useState('');
   const [itemsList, setItemsList] = useState<ItemType[]>(items);
@@ -57,9 +60,9 @@ export const SelectModal: FC<SelectModalProps> = ({
   const onSelect = (item: ItemType) => {
     setSearch('');
     handleFilterChange('');
-    StatusBar.setHidden(false);
+    StatusBar.setHidden(true);
     if (onSelectItem) onSelectItem(item);
-    setVisible(false);
+    close();
   };
 
   const renderItemTemplate = ({
@@ -78,8 +81,22 @@ export const SelectModal: FC<SelectModalProps> = ({
         {renderItem ? (
           renderItem(item)
         ) : (
-          <View style={[styles.item, modalStyle?.container]}>
-            <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
+          <View
+            style={[
+              styles.item,
+              modalStyle?.container,
+              {
+                backgroundColor: item.key === selectItem?.key ? '#F0F0F0' : '',
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.itemLabel,
+                modalStyle?.itemStyle,
+                { color: item.key === selectItem?.key ? '#efef' : '#efweg' },
+              ]}
+            >
               {item.label}
             </Text>
           </View>
@@ -114,64 +131,62 @@ export const SelectModal: FC<SelectModalProps> = ({
     </View>
   );
   return (
-    <View
-      style={[
-        styles.container,
-        modalStyle?.container,
-
-        {
-          height: '95%',
-          marginTop: 'auto',
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-        },
-      ]}
-    >
-      <View style={styles.header}>
-        {showModalTitle && (
-          <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
-            {title}
-          </Text>
-        )}
-        {showCloseButton && (
-          <TouchableOpacity
-            onPress={() => {
-              setVisible(false);
-              setSearch('');
-              handleFilterChange('');
-              StatusBar.setHidden(false);
-            }}
-            style={styles.searchClose}
-          >
-            <Text style={styles.btnClose}>✖️</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-      <View style={styles.search}>
-        <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
-          <TextInput
-            onChangeText={(text) => handleFilterChange(text)}
-            value={search}
-            placeholder={searchPlaceholder}
-            placeholderTextColor={Colors.textFieldColor}
-            style={[styles.textSearch, styles.textInput]}
-          />
-        </View>
-      </View>
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={[styles.listContainer, Styles.container, modalStyle?.listStyle]}
+    <AnimatePresence>
+      <MotiView
+        transition={{ duration: 400, type: 'timing' }}
+        state={modalAnimation}
+        style={[styles.container, Styles.modalView, modalStyle?.container]}
       >
-        <FlashList
-          keyboardShouldPersistTaps={'handled'}
-          ref={(ref) => (_flashListRef.current = ref)}
-          data={itemsList}
-          renderItem={renderItemTemplate}
-          keyExtractor={(item) => item.key}
-          ListEmptyComponent={emptyItem}
-          estimatedItemSize={17}
-        />
-      </KeyboardAvoidingView>
-    </View>
+        <View style={styles.header}>
+          {showModalTitle && (
+            <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
+              {title}
+            </Text>
+          )}
+          {showCloseButton && (
+            <TouchableOpacity
+              onPress={() => {
+                close();
+                setSearch('');
+                handleFilterChange('');
+                StatusBar.setHidden(false);
+              }}
+              style={styles.searchClose}
+            >
+              <Text style={styles.btnClose}>✖️</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.search}>
+          <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
+            <TextInput
+              onChangeText={(text) => handleFilterChange(text)}
+              value={search}
+              placeholder={searchPlaceholder}
+              placeholderTextColor={Colors.textFieldColor}
+              style={[styles.textSearch, styles.textInput]}
+            />
+          </View>
+        </View>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={[
+            styles.listContainer,
+            Styles.container,
+            modalStyle?.listStyle,
+          ]}
+        >
+          <FlashList
+            keyboardShouldPersistTaps={'handled'}
+            ref={(ref) => (_flashListRef.current = ref)}
+            data={itemsList}
+            renderItem={renderItemTemplate}
+            keyExtractor={(item) => item.key}
+            ListEmptyComponent={emptyItem}
+            estimatedItemSize={17}
+          />
+        </KeyboardAvoidingView>
+      </MotiView>
+    </AnimatePresence>
   );
 };

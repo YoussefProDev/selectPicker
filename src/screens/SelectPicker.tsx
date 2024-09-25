@@ -1,7 +1,8 @@
-import { useState, useImperativeHandle, forwardRef, useRef } from 'react';
-import { View, Modal } from 'react-native';
+import { useState, useImperativeHandle, forwardRef, useCallback } from 'react';
+import { View, Modal, useWindowDimensions } from 'react-native';
 import { SelectTrigger, SelectModal } from '../components';
 import type { ItemType, SelectPickerProps, SelectPickerRef } from '../types';
+import { useDynamicAnimation } from 'moti';
 
 export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
   (
@@ -26,55 +27,75 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
     },
     ref
   ) => {
-    // const items = Object.values(dataCurrency);
-
     const [selectItem, setSelectItem] = useState<ItemType | undefined>(
       items[0]
     );
+    const window = useWindowDimensions();
+    const modalAnimation = useDynamicAnimation(() => ({
+      translateY: window.height,
+    }));
+    // initial: { translateY: window.height },
+    // open: { translateY: 0 },
+    // close: { translateY: -window.height },
     const [visible, setVisible] = useState(false);
+    const open = useCallback(() => {
+      setVisible(true);
+      modalAnimation.animateTo((current) => {
+        if (current.translateY !== window.height) {
+          return { translateY: window.height };
+        } else {
+          return { translateY: 0 };
+        }
+      });
+      onOpen?.();
+    }, [onOpen, setVisible, modalAnimation, window]);
+    const close = useCallback(() => {
+      setTimeout(() => {
+        setVisible(false);
+      }, 400);
+      modalAnimation.animateTo((current) => {
+        if (current.translateY !== 0) {
+          return { translateY: 0 };
+        } else {
+          return { translateY: window.height };
+        }
+      });
 
+      onClose?.();
+    }, [onClose, setVisible, modalAnimation, window]);
     useImperativeHandle(
       ref,
       () => ({
-        open: () => {
-          setVisible(true);
-
-          onOpen?.();
-        },
-        close: () => {
-          setVisible(false);
-
-          onClose?.();
-        },
+        open,
+        close,
       }),
-      [onClose, onOpen]
+      [close, open]
     );
     const onSelect = (item: ItemType) => {
       onSelectItem?.(item);
       setSelectItem(item);
     };
-    const selectRef = useRef<SelectPickerRef>(null);
+
+    // const selectRef = useRef<SelectPickerRef>(ref);
 
     return (
       <View>
         <SelectTrigger
-          open={selectRef.current?.open}
+          open={open}
           selectItem={selectItem}
           triggerStyle={triggerStyle}
           renderTrigger={renderTrigger}
           disable={disable}
         />
 
-        <Modal visible={visible} onRequestClose={selectRef.current?.close}>
+        <Modal visible={visible} onRequestClose={close}>
           <SelectModal
+            selectItem={selectItem}
             items={items}
             onSelectItem={(item: ItemType) => {
               onSelect(item);
             }}
-            setVisible={(value: boolean) => {
-              setVisible(value);
-              onClose && onClose();
-            }}
+            close={close}
             title={title}
             searchPlaceholder={searchPlaceholder}
             textEmpty={textEmpty}
@@ -83,6 +104,7 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
             showCloseButton={showCloseButton}
             showModalTitle={showModalTitle}
             renderItem={renderItem}
+            modalAnimation={modalAnimation}
           />
         </Modal>
       </View>
