@@ -5,7 +5,7 @@ export const Colors = {
   whiteSmoke: 'whitesmoke',
   white: '#fff',
   athensGray: '#F7F8FA',
-  backgroundCurrency: '#1b1b1f',
+  background: '#1b1b1f',
   textFieldColor: '#9fa5aa',
   blueZodiac: '#2e2e32',
   codGray: '#1A1A1A',
@@ -20,7 +20,7 @@ export const ColorDarkMode = {
   txtCountryName: Colors.athensGray,
   txtCallingCode: Colors.silver,
   txtTitleModal: Colors.white,
-  backgroundModal: Colors.backgroundCurrency,
+  backgroundModal: Colors.background,
   backgroundInput: Colors.blueZodiac,
 };
 

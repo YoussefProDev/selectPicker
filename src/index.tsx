@@ -3,10 +3,8 @@ import { SelectPicker } from './screens';
 import { type SelectPickerProps } from './types';
 
 const DEFAULT_OPTIONS = {
-  onSelectCurrency: () => {},
+  onSelectItem: () => {},
   style: {},
-  showFlag: true,
-  showCurrencyName: true,
   darkMode: false,
 };
 

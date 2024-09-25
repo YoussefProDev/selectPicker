@@ -23,8 +23,6 @@ export const SelectPicker: FC<SelectPickerProps> = ({
   showCloseButton = true,
   showModalTitle = true,
 }) => {
-  // const items = Object.values(dataCurrency);
-
   const [selectItem, setSelectItem] = useState<ItemType | undefined>(items[0]);
   const [visible, setVisible] = useState(false);
 

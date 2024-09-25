@@ -23,7 +23,7 @@ type ModalStyle = {
   listStyle?: ViewStyle;
 };
 
-// Props per il componente DialogCurrency
+// Props per il componente SelectModal
 export type SelectModalProps = {
   items: ItemType[];
   onSelectItem: (item: ItemType) => void;
@@ -48,13 +48,13 @@ export type SelectTriggerProps = {
   darkMode?: boolean;
 };
 
-// Riferimento al componente CurrencyPicker per il controllo programmatico
+// Riferimento al componente SelectPicker per il controllo programmatico
 export type SelectPickerRef = {
   open: () => void;
   close: () => void;
 };
 
-// Props per il componente CurrencyPicker
+// Props per il componente SelectPicker
 export type SelectPickerProps = {
   items: ItemType[];
   onSelectItem?: (item: ItemType) => void;
