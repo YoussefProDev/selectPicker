@@ -1,6 +1,6 @@
-import { type FC } from 'react';
+import { forwardRef } from 'react';
 import { SelectPicker } from './screens';
-import { type SelectPickerProps } from './types';
+import { type SelectPickerProps, type SelectPickerRef } from './types';
 
 const DEFAULT_OPTIONS = {
   onSelectItem: () => {},
@@ -8,13 +8,14 @@ const DEFAULT_OPTIONS = {
   darkMode: false,
 };
 
-export const SelectPickerComponent: FC<SelectPickerProps> = (
-  props: SelectPickerProps
-) => {
+export const SelectPickerComponent = forwardRef<
+  SelectPickerRef,
+  SelectPickerProps
+>((props, ref) => {
   const propsModel = {
     ...DEFAULT_OPTIONS,
     ...props,
   };
 
-  return <SelectPicker {...propsModel} />;
-};
+  return <SelectPicker ref={ref} {...propsModel} />;
+});

@@ -1,84 +1,91 @@
-import { useState, useEffect, type FC, useMemo } from 'react';
+import { useState, useImperativeHandle, forwardRef, useRef } from 'react';
 import { View, Modal } from 'react-native';
 import { SelectTrigger, SelectModal } from '../components';
-import type { ItemType, SelectPickerProps } from '../types';
+import type { ItemType, SelectPickerProps, SelectPickerRef } from '../types';
 
-export const SelectPicker: FC<SelectPickerProps> = ({
-  items,
-  onSelectItem,
-  darkMode = false,
-  renderTrigger,
-  renderItem,
-  selectPickerRef,
-  disable = false,
-  onOpen,
-  onClose,
+export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
+  (
+    {
+      items,
+      onSelectItem,
+      darkMode = false,
+      renderTrigger,
+      renderItem,
+      disable = false,
+      onOpen,
+      onClose,
 
-  triggerStyle,
-  modalStyle,
+      triggerStyle,
+      modalStyle,
 
-  title,
-  searchPlaceholder,
-  textEmpty,
-  showCloseButton = true,
-  showModalTitle = true,
-}) => {
-  const [selectItem, setSelectItem] = useState<ItemType | undefined>(items[0]);
-  const [visible, setVisible] = useState(false);
+      title,
+      searchPlaceholder,
+      textEmpty,
+      showCloseButton = true,
+      showModalTitle = true,
+    },
+    ref
+  ) => {
+    // const items = Object.values(dataCurrency);
 
-  const pickerRef = useMemo(
-    () => ({
-      open: () => {
-        setVisible(true);
-        onOpen?.();
-      },
-      close: () => {
-        setVisible(false);
-        onClose?.();
-      },
-    }),
-    [onClose, onOpen]
-  );
+    const [selectItem, setSelectItem] = useState<ItemType | undefined>(
+      items[0]
+    );
+    const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    selectPickerRef?.(pickerRef);
-  }, [selectPickerRef, pickerRef]);
+    useImperativeHandle(
+      ref,
+      () => ({
+        open: () => {
+          setVisible(true);
 
-  const onSelect = (item: ItemType) => {
-    onSelectItem?.(item);
-    setSelectItem(item);
-  };
+          onOpen?.();
+        },
+        close: () => {
+          setVisible(false);
 
-  return (
-    <View>
-      <SelectTrigger
-        open={pickerRef.open}
-        selectItem={selectItem}
-        triggerStyle={triggerStyle}
-        renderTrigger={renderTrigger}
-        disable={disable}
-      />
+          onClose?.();
+        },
+      }),
+      [onClose, onOpen]
+    );
+    const onSelect = (item: ItemType) => {
+      onSelectItem?.(item);
+      setSelectItem(item);
+    };
+    const selectRef = useRef<SelectPickerRef>(null);
 
-      <Modal visible={visible} onRequestClose={pickerRef.close}>
-        <SelectModal
-          items={items}
-          onSelectItem={(item: ItemType) => {
-            onSelect(item);
-          }}
-          setVisible={(value: boolean) => {
-            setVisible(value);
-            onClose && onClose();
-          }}
-          title={title}
-          searchPlaceholder={searchPlaceholder}
-          textEmpty={textEmpty}
-          darkMode={darkMode}
-          modalStyle={modalStyle}
-          showCloseButton={showCloseButton}
-          showModalTitle={showModalTitle}
-          renderItem={renderItem}
+    return (
+      <View>
+        <SelectTrigger
+          open={selectRef.current?.open}
+          selectItem={selectItem}
+          triggerStyle={triggerStyle}
+          renderTrigger={renderTrigger}
+          disable={disable}
         />
-      </Modal>
-    </View>
-  );
-};
+
+        <Modal visible={visible} onRequestClose={selectRef.current?.close}>
+          <SelectModal
+            items={items}
+            onSelectItem={(item: ItemType) => {
+              onSelect(item);
+            }}
+            setVisible={(value: boolean) => {
+              setVisible(value);
+              onClose && onClose();
+            }}
+            title={title}
+            searchPlaceholder={searchPlaceholder}
+            textEmpty={textEmpty}
+            darkMode={darkMode}
+            modalStyle={modalStyle}
+            showCloseButton={showCloseButton}
+            showModalTitle={showModalTitle}
+            renderItem={renderItem}
+          />
+        </Modal>
+      </View>
+    );
+  }
+);

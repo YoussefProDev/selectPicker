@@ -22,6 +22,15 @@ type ModalStyle = {
   titleStyle?: TextStyle;
   listStyle?: ViewStyle;
 };
+// Props per il componente SelectTrigger
+export type SelectTriggerProps = {
+  open?: () => void;
+  selectItem: ItemType | undefined;
+  triggerStyle?: TriggerStyle;
+  renderTrigger?: (item: ItemType | undefined) => React.ReactNode;
+  disable?: boolean;
+  darkMode?: boolean;
+};
 
 // Props per il componente SelectModal
 export type SelectModalProps = {
@@ -38,23 +47,13 @@ export type SelectModalProps = {
   renderItem?: (item: ItemType | undefined) => React.ReactNode;
 };
 
-// Props per il componente SelectTrigger
-export type SelectTriggerProps = {
-  open: () => void;
-  selectItem: ItemType | undefined;
-  triggerStyle?: TriggerStyle;
-  renderTrigger?: (item: ItemType | undefined) => React.ReactNode;
-  disable?: boolean;
-  darkMode?: boolean;
-};
-
-// Riferimento al componente SelectPicker per il controllo programmatico
+// Riferimento al componente CurrencyPicker per il controllo programmatico
 export type SelectPickerRef = {
   open: () => void;
   close: () => void;
 };
 
-// Props per il componente SelectPicker
+// Props per il componente CurrencyPicker
 export type SelectPickerProps = {
   items: ItemType[];
   onSelectItem?: (item: ItemType) => void;
@@ -62,7 +61,7 @@ export type SelectPickerProps = {
   darkMode?: boolean;
   renderTrigger?: (item: ItemType | undefined) => React.ReactNode;
   renderItem?: (item: ItemType | undefined) => React.ReactNode;
-  selectPickerRef?: (methods: SelectPickerRef) => void;
+
   disable?: boolean;
   onOpen?: () => void;
   onClose?: () => void;

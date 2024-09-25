@@ -114,7 +114,19 @@ export const SelectModal: FC<SelectModalProps> = ({
     </View>
   );
   return (
-    <View style={[styles.container, modalStyle?.container]}>
+    <View
+      style={[
+        styles.container,
+        modalStyle?.container,
+
+        {
+          height: '95%',
+          marginTop: 'auto',
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+        },
+      ]}
+    >
       <View style={styles.header}>
         {showModalTitle && (
           <Text style={[styles.titleModal, modalStyle?.titleStyle]}>

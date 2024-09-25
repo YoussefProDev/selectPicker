@@ -1,7 +1,11 @@
-import { StyleSheet, View } from 'react-native';
+import { Button, StyleSheet, View } from 'react-native';
 import { SelectPickerComponent } from 'select-picker';
 import currency from './constants/CommonCurrency.json';
+import { useRef } from 'react';
+import type { SelectPickerRef } from '../../src/types';
+
 export default function App() {
+  const selectRef = useRef<SelectPickerRef>(null);
   const items = Object.values(currency).map(({ name, code, ...data }) => {
     return {
       key: code,
@@ -17,6 +21,15 @@ export default function App() {
         items={items}
         onSelectItem={(item) => {
           console.log(item);
+        }}
+        ref={selectRef}
+      />
+      <Button
+        title="apri"
+        onPress={() => {
+          console.log('press');
+
+          selectRef.current?.open();
         }}
       />
     </View>
