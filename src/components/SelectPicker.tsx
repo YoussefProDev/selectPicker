@@ -1,8 +1,14 @@
 import { useState, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { View, Modal, useWindowDimensions } from 'react-native';
-import { SelectTrigger, SelectModal } from '../components';
+import { SelectModal } from './SelectModal';
+import { SelectTrigger } from './SelectTrigger';
 import type { ItemType, SelectPickerProps, SelectPickerRef } from '../types';
 import { useDynamicAnimation } from 'moti';
+import {
+  Directions,
+  Gesture,
+  GestureDetector,
+} from 'react-native-gesture-handler';
 
 export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
   (
@@ -34,9 +40,7 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
     const modalAnimation = useDynamicAnimation(() => ({
       translateY: window.height,
     }));
-    // initial: { translateY: window.height },
-    // open: { translateY: 0 },
-    // close: { translateY: -window.height },
+
     const [visible, setVisible] = useState(false);
     const open = useCallback(() => {
       setVisible(true);
@@ -53,13 +57,7 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
       setTimeout(() => {
         setVisible(false);
       }, 400);
-      modalAnimation.animateTo((current) => {
-        if (current.translateY !== 0) {
-          return { translateY: 0 };
-        } else {
-          return { translateY: window.height };
-        }
-      });
+      modalAnimation.animateTo({ translateY: window.height });
 
       onClose?.();
     }, [onClose, setVisible, modalAnimation, window]);
@@ -75,8 +73,10 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
       onSelectItem?.(item);
       setSelectItem(item);
     };
-
-    // const selectRef = useRef<SelectPickerRef>(ref);
+    const gesture = Gesture.Fling()
+      .direction(Directions.DOWN)
+      .onFinalize(close)
+      .runOnJS(true);
 
     return (
       <View>
@@ -89,23 +89,25 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
         />
 
         <Modal visible={visible} onRequestClose={close}>
-          <SelectModal
-            selectItem={selectItem}
-            items={items}
-            onSelectItem={(item: ItemType) => {
-              onSelect(item);
-            }}
-            close={close}
-            title={title}
-            searchPlaceholder={searchPlaceholder}
-            textEmpty={textEmpty}
-            darkMode={darkMode}
-            modalStyle={modalStyle}
-            showCloseButton={showCloseButton}
-            showModalTitle={showModalTitle}
-            renderItem={renderItem}
-            modalAnimation={modalAnimation}
-          />
+          <GestureDetector gesture={gesture}>
+            <SelectModal
+              selectItem={selectItem}
+              items={items}
+              onSelectItem={(item: ItemType) => {
+                onSelect(item);
+              }}
+              close={close}
+              title={title}
+              searchPlaceholder={searchPlaceholder}
+              textEmpty={textEmpty}
+              darkMode={darkMode}
+              modalStyle={modalStyle}
+              showCloseButton={showCloseButton}
+              showModalTitle={showModalTitle}
+              renderItem={renderItem}
+              modalAnimation={modalAnimation}
+            />
+          </GestureDetector>
         </Modal>
       </View>
     );

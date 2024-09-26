@@ -31,7 +31,8 @@ export const getStyles = (darkTheme = false) => {
     itemLabel: {
       color: Colors.txtCountryName,
       fontWeight: '600',
-      textAlign: 'center',
+      padding: 5,
+      // textAlign: 'center',
       fontSize: 16,
       marginBottom: marginBottomByPlatform,
     },

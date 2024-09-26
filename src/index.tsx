@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { SelectPicker } from './screens';
+import { SelectPicker } from './components';
 import { type SelectPickerProps, type SelectPickerRef } from './types';
 const DEFAULT_OPTIONS = {
   onSelectItem: () => {},

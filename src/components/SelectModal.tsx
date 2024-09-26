@@ -85,16 +85,14 @@ export const SelectModal: FC<SelectModalProps> = ({
             style={[
               styles.item,
               modalStyle?.container,
-              {
-                backgroundColor: item.key === selectItem?.key ? '#F0F0F0' : '',
-              },
+              // item.key === selectItem?.key ? Styles.selectedItem : null,
             ]}
           >
             <Text
               style={[
                 styles.itemLabel,
                 modalStyle?.itemStyle,
-                { color: item.key === selectItem?.key ? '#efef' : '#efweg' },
+                item.key === selectItem?.key ? Styles.selectedItem : null,
               ]}
             >
               {item.label}
@@ -133,7 +131,7 @@ export const SelectModal: FC<SelectModalProps> = ({
   return (
     <AnimatePresence>
       <MotiView
-        transition={{ duration: 400, type: 'timing' }}
+        transition={{ duration: 500, type: 'timing' }}
         state={modalAnimation}
         style={[styles.container, Styles.modalView, modalStyle?.container]}
       >

@@ -3,7 +3,8 @@ import { SelectPickerComponent } from 'select-picker';
 import currency from './constants/CommonCurrency.json';
 import { useRef } from 'react';
 import type { SelectPickerRef } from '../../src/types';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-gesture-handler';
 export default function App() {
   const selectRef = useRef<SelectPickerRef>(null);
   const items = Object.values(currency).map(({ name, code, ...data }) => {
@@ -16,23 +17,34 @@ export default function App() {
   });
 
   return (
-    <View style={styles.container}>
-      <SelectPickerComponent
-        items={items}
-        onSelectItem={(item) => {
-          console.log(item);
-        }}
-        ref={selectRef}
-      />
-      <Button
-        title="apri"
-        onPress={() => {
-          console.log('press');
+    <GestureHandlerRootView style={styles.container}>
+      <View>
+        <SelectPickerComponent
+          items={items}
+          onSelectItem={(item) => {
+            console.log(item);
+          }}
+          darkMode
+          ref={selectRef}
+        />
+        <Button
+          title="apri"
+          onPress={() => {
+            console.log('apri');
 
-          selectRef.current?.open();
-        }}
-      />
-    </View>
+            selectRef.current?.open();
+          }}
+        />
+        <Button
+          title="chiudi"
+          onPress={() => {
+            console.log('chiudi');
+
+            selectRef.current?.close();
+          }}
+        />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 

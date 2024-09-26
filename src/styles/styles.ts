@@ -35,4 +35,9 @@ export const Styles = StyleSheet.create({
     borderTopRightRadius: 30,
   },
   lastItem: { marginBottom: 80 },
+  selectedItem: {
+    backgroundColor: '#D8DCE2',
+    borderRadius: 5,
+    width: '100%',
+  },
 });
