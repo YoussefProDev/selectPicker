@@ -24,7 +24,7 @@ export default function App() {
           onSelectItem={(item) => {
             console.log(item);
           }}
-          darkMode
+          // darkMode
           ref={selectRef}
         />
         <Button

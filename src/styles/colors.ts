@@ -10,7 +10,7 @@ export const Colors = {
   blueZodiac: '#2e2e32',
   codGray: '#1A1A1A',
   mercury: '#e6e6e6',
-
+  selectColor: '#414146',
   // name color by hex: ~> http://chir.ag/projects/name-that-color/#FFFFFF
 };
 
@@ -22,6 +22,7 @@ export const ColorDarkMode = {
   txtTitleModal: Colors.white,
   backgroundModal: Colors.background,
   backgroundInput: Colors.blueZodiac,
+  selectColor: Colors.selectColor,
 };
 
 export const ColorLightMode = {
@@ -32,4 +33,5 @@ export const ColorLightMode = {
   txtTitleModal: Colors.black,
   backgroundModal: Colors.whiteSmoke,
   backgroundInput: Colors.mercury,
+  selectColor: Colors.textFieldColor,
 };

@@ -75,7 +75,7 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
     };
     const gesture = Gesture.Fling()
       .direction(Directions.DOWN)
-      .onFinalize(close)
+      .onStart(close)
       .runOnJS(true);
 
     return (

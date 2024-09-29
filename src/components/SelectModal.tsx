@@ -81,18 +81,12 @@ export const SelectModal: FC<SelectModalProps> = ({
         {renderItem ? (
           renderItem(item)
         ) : (
-          <View
-            style={[
-              styles.item,
-              modalStyle?.container,
-              // item.key === selectItem?.key ? Styles.selectedItem : null,
-            ]}
-          >
+          <View style={[styles.item, modalStyle?.container]}>
             <Text
               style={[
                 styles.itemLabel,
                 modalStyle?.itemStyle,
-                item.key === selectItem?.key ? Styles.selectedItem : null,
+                item.key === selectItem?.key ? styles.selectedItem : null,
               ]}
             >
               {item.label}

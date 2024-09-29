@@ -85,5 +85,11 @@ export const getStyles = (darkTheme = false) => {
       fontSize: 16,
       fontWeight: '500',
     },
+    selectedItem: {
+      backgroundColor: Colors.selectColor,
+      color: Colors.txtTitleModal,
+      borderRadius: 5,
+      width: '100%',
+    },
   });
 };

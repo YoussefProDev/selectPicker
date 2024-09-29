@@ -31,13 +31,8 @@ export const Styles = StyleSheet.create({
   modalView: {
     flex: 1,
     marginTop: height * 0.08,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: width * 0.08,
+    borderTopRightRadius: width * 0.08,
   },
   lastItem: { marginBottom: 80 },
-  selectedItem: {
-    backgroundColor: '#D8DCE2',
-    borderRadius: 5,
-    width: '100%',
-  },
 });
