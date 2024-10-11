@@ -1,8 +1,24 @@
 import { SelectPickerComponent } from '../index';
-import * as types from './types';
+import {
+  ItemType,
+  SelectModalProps,
+  SelectPickerProps,
+  SelectPickerRef,
+  SelectTriggerProps,
+  Items,
+  SectionType,
+} from './types';
 declare module 'select-picker' {
-  export { types };
   // Esportazione della classe SelectPickerComponent
   // export class SelectPicker extends React.Component<SelectPickerProps> {}
-  export { SelectPickerComponent };
+  export {
+    SelectPickerComponent,
+    ItemType,
+    SelectModalProps,
+    SelectPickerProps,
+    SelectPickerRef,
+    SelectTriggerProps,
+    Items,
+    SectionType,
+  };
 }

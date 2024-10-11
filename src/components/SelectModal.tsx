@@ -1,4 +1,4 @@
-import { type FC, useEffect, useRef, useState } from 'react';
+import { type FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
   TouchableOpacity,
   StatusBar,
@@ -10,7 +10,7 @@ import {
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
 import { Colors, Styles, getStyles } from '../styles';
-import type { SelectModalProps, ItemType } from '../types';
+import type { SelectModalProps, ItemType, Items, SectionType } from '../types';
 import { FlashList } from '@shopify/flash-list';
 export const SelectModal: FC<SelectModalProps> = ({
   items,
@@ -26,10 +26,14 @@ export const SelectModal: FC<SelectModalProps> = ({
   selectItem,
   close,
   modalAnimation,
+  pageStyle,
 }) => {
   const [search, setSearch] = useState('');
-  const [itemsList, setItemsList] = useState<ItemType[]>(items);
-
+  const [itemsList, setItemsList] = useState<Items>(items);
+  const isSection = useMemo(() => {
+    if (items instanceof SectionType) return true;
+    return false;
+  });
   let _flashListRef = useRef<FlashList<ItemType> | null>();
 
   useEffect(() => {
@@ -127,7 +131,11 @@ export const SelectModal: FC<SelectModalProps> = ({
       <MotiView
         transition={{ duration: 500, type: 'timing' }}
         state={modalAnimation}
-        style={[styles.container, Styles.modalView, modalStyle?.container]}
+        style={[
+          styles.container,
+          pageStyle === 'Modal' ? Styles.modalView : {},
+          modalStyle?.container,
+        ]}
       >
         <View style={styles.header}>
           {showModalTitle && (
@@ -168,15 +176,19 @@ export const SelectModal: FC<SelectModalProps> = ({
             modalStyle?.listStyle,
           ]}
         >
-          <FlashList
-            keyboardShouldPersistTaps={'handled'}
-            ref={(ref) => (_flashListRef.current = ref)}
-            data={itemsList}
-            renderItem={renderItemTemplate}
-            keyExtractor={(item) => item.key}
-            ListEmptyComponent={emptyItem}
-            estimatedItemSize={17}
-          />
+          {isSection ? (
+            <Text>Section</Text>
+          ) : (
+            <FlashList
+              keyboardShouldPersistTaps={'handled'}
+              ref={(ref) => (_flashListRef.current = ref)}
+              data={itemsList}
+              renderItem={renderItemTemplate}
+              keyExtractor={(item) => item.key}
+              ListEmptyComponent={emptyItem}
+              estimatedItemSize={17}
+            />
+          )}
         </KeyboardAvoidingView>
       </MotiView>
     </AnimatePresence>

@@ -189,5 +189,5 @@
     "type": "library",
     "version": "0.41.2"
   },
-  "types": "./lib/typescript/commonjs/src/index.d.ts"
+  "types": "./lib/typescript/module/src/index.d.ts"
 }

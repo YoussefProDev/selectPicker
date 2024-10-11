@@ -30,12 +30,14 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
       textEmpty,
       showCloseButton = true,
       showModalTitle = true,
+      pageStyle,
     },
     ref
   ) => {
     const [selectItem, setSelectItem] = useState<ItemType | undefined>(
       items[0]
     );
+
     const window = useWindowDimensions();
     const modalAnimation = useDynamicAnimation(() => ({
       translateY: window.height,
@@ -75,7 +77,11 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
     };
     const gesture = Gesture.Fling()
       .direction(Directions.DOWN)
+<<<<<<< Updated upstream
       .onStart(close)
+=======
+      .onEnd(close)
+>>>>>>> Stashed changes
       .runOnJS(true);
 
     return (
@@ -106,6 +112,7 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
               showModalTitle={showModalTitle}
               renderItem={renderItem}
               modalAnimation={modalAnimation}
+              pageStyle={pageStyle ?? 'FullPage'}
             />
           </GestureDetector>
         </Modal>
