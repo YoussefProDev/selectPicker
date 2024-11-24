@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-
-import { Styles, getStyles } from '../styles';
+import { getStyles } from '../styles';
 import type { SelectTriggerProps } from '../types';
 import { useMemo } from 'react';
+
 export const SelectTrigger = ({
   open,
   selectItem,
@@ -12,18 +12,13 @@ export const SelectTrigger = ({
   darkMode,
 }: SelectTriggerProps) => {
   const styles = useMemo(() => getStyles(darkMode), [darkMode]);
+
   return (
     <TouchableOpacity disabled={disable} onPress={open}>
       {renderTrigger ? (
         renderTrigger(selectItem)
       ) : (
-        <View
-          style={[
-            Styles.justifyContent,
-            triggerStyle?.container,
-            Styles.justifyCenter,
-          ]}
-        >
+        <View style={[triggerStyle?.container, styles.justifyCenter]}>
           <Text style={[styles.itemLabel, triggerStyle?.itemLabel]}>
             {selectItem?.label}
           </Text>

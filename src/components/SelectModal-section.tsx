@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
-import { Colors, getStyles } from '../styles';
-import type { SelectModalProps, ItemType } from '../types';
+import { getStyles } from '../styles';
 import { FlashList } from '@shopify/flash-list';
+import type { ItemType, SectionType, SelectModalSectionProps } from '../types';
 
-export const SelectModal: FC<SelectModalProps> = ({
-  items,
+export const SelectModalSection: FC<SelectModalSectionProps> = ({
+  sections,
   renderItem,
   onSelectItem,
   title = 'Select',
@@ -28,40 +28,85 @@ export const SelectModal: FC<SelectModalProps> = ({
   close,
   modalAnimation,
   pageStyle,
+  renderSectionItem,
 }) => {
-  const [search, setSearch] = useState('');
-  const [itemsList, setItemsList] = useState<ItemType[]>(items);
+  if (!sections[0]) return null;
 
-  const _flashListRef = useRef<FlashList<ItemType> | null>(null);
+  const [search, setSearch] = useState('');
+  const [sectionSelect, setSectionSelect] = useState<SectionType>(sections[0]);
+  const [itemsList, setItemsList] = useState<ItemType[]>([
+    ...sectionSelect.items,
+  ]);
+  const [selectedSection, setSelectedSection] = useState<string>(
+    sections[0]?.sectionName || ''
+  );
+
+  const styles = getStyles(darkMode);
+  const sectionListRef = useRef<FlashList<SectionType> | null>(null);
+  const flashListRef = useRef<FlashList<ItemType> | null>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
     return () => {
+      StatusBar.setHidden(false);
       setSearch('');
     };
   }, []);
 
-  const styles = getStyles(darkMode);
+  const fuse = new Fuse<ItemType>(
+    sections.flatMap((section) => section.items),
+    {
+      shouldSort: true,
+      threshold: 0.6,
+      keys: ['key', 'label', 'data'],
+    }
+  );
 
-  const options: any = {
-    shouldSort: true,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32, // Aggiungi qui il valore
-    minMatchCharLength: 1,
-    keys: ['label', 'key', 'data'],
-    id: 'key',
+  const handleFilterChange = (value: string) => {
+    setSearch(value);
+    const filteredItems =
+      value === ''
+        ? [...sectionSelect.items]
+        : fuse.search(value).map((result) => result.item);
+    setItemsList(filteredItems);
+    flashListRef.current?.scrollToOffset({ offset: 0 });
   };
-
-  const fuse = new Fuse<ItemType>(items, options);
 
   const onSelect = (item: ItemType) => {
     setSearch('');
     handleFilterChange('');
-    StatusBar.setHidden(true);
-    if (onSelectItem) onSelectItem(item);
+    onSelectItem?.(item);
     close();
+  };
+
+  const handleSectionSelect = (item: SectionType) => {
+    setSectionSelect(item);
+    setItemsList([...item.items]);
+    setSelectedSection(item.sectionName);
+  };
+
+  const renderSectionTemplate = ({ item }: { item: SectionType }) => {
+    return (
+      <TouchableOpacity style={[]} onPress={() => handleSectionSelect(item)}>
+        {renderSectionItem ? (
+          renderSectionItem(item)
+        ) : (
+          // <View style={[styles.section, modalStyle?.container]}>
+          <Text
+            style={[
+              styles.itemLabel,
+              modalStyle?.itemStyle,
+              item.sectionName === selectedSection &&
+                styles.selectedSectionItem,
+              ,
+            ]}
+          >
+            {item.sectionName}
+          </Text>
+          // </View>
+        )}
+      </TouchableOpacity>
+    );
   };
 
   const renderItemTemplate = ({
@@ -93,24 +138,6 @@ export const SelectModal: FC<SelectModalProps> = ({
     );
   };
 
-  const handleFilterChange = (value: string) => {
-    setSearch(value);
-
-    let listDataFilter: ItemType[] = [];
-
-    if (value === '') {
-      listDataFilter = items;
-    } else {
-      const filteredItems = fuse.search(value);
-      if (_flashListRef.current) {
-        _flashListRef.current.scrollToOffset({ offset: 0 });
-      }
-      filteredItems.map((result) => listDataFilter.push(result.item));
-    }
-
-    setItemsList(listDataFilter);
-  };
-
   const emptyItem = () => (
     <View style={styles.listNullContainer}>
       <Text style={styles.txtEmpty}>{textEmpty}</Text>
@@ -124,8 +151,8 @@ export const SelectModal: FC<SelectModalProps> = ({
         state={modalAnimation}
         style={[
           styles.container,
-          pageStyle === 'Modal' ? styles.modalView : null, // Modifica qui per usare modalView
           modalStyle?.container,
+          pageStyle === 'Modal' ? styles.modalView : null, // Modifica qui per usare modalView
         ]}
       >
         <View style={styles.header}>
@@ -136,7 +163,11 @@ export const SelectModal: FC<SelectModalProps> = ({
           )}
           {showCloseButton && (
             <TouchableOpacity
-              onPress={() => close()}
+              onPress={() => {
+                close();
+                setSearch('');
+                handleFilterChange('');
+              }}
               style={styles.searchClose}
             >
               <Text style={styles.btnClose}>✖️</Text>
@@ -149,10 +180,7 @@ export const SelectModal: FC<SelectModalProps> = ({
               onChangeText={handleFilterChange}
               value={search}
               placeholder={searchPlaceholder}
-              placeholderTextColor={
-                Colors[darkMode ? 'DarkModeColors' : 'LightModeColors']
-                  .textFieldColor
-              }
+              placeholderTextColor={styles.fontDefault.color}
               style={[styles.textSearch, styles.textInput]}
             />
           </View>
@@ -161,9 +189,23 @@ export const SelectModal: FC<SelectModalProps> = ({
           behavior="padding"
           style={[styles.listContainer, modalStyle?.listStyle]}
         >
+          <View style={{ marginBottom: 15 }}>
+            <FlashList
+              key={selectedSection}
+              keyboardShouldPersistTaps="handled"
+              ref={sectionListRef}
+              renderItem={renderSectionTemplate}
+              data={sections}
+              keyExtractor={(section) => section.sectionName}
+              ListEmptyComponent={emptyItem}
+              estimatedItemSize={50}
+              horizontal
+            />
+          </View>
+
           <FlashList
             keyboardShouldPersistTaps="handled"
-            ref={_flashListRef}
+            ref={flashListRef}
             data={itemsList}
             renderItem={renderItemTemplate}
             keyExtractor={(item) => item.key}

@@ -1,16 +1,23 @@
-import { useState, useImperativeHandle, forwardRef, useCallback } from 'react';
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { View, Modal, useWindowDimensions } from 'react-native';
-import { SelectModal } from './SelectModal';
-import { SelectTrigger } from './SelectTrigger';
-import type { ItemType, SelectPickerProps, SelectPickerRef } from '../types';
+
+import type { ItemType, PickerListProps, PickerListRef } from '../types';
 import { useDynamicAnimation } from 'moti';
 import {
   Directions,
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler';
+import { SelectModal, SelectTrigger } from '../components';
+import { getStyles } from '../styles';
 
-export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
+export const PickerListComponent = forwardRef<PickerListRef, PickerListProps>(
   (
     {
       items,
@@ -34,35 +41,32 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
     },
     ref
   ) => {
-    const [selectItem, setSelectItem] = useState<ItemType | undefined>(
-      items[0]
+    // Assicurati che selectItem non sia undefined
+    const [selectItem, setSelectItem] = useState<ItemType | null>(
+      items[0] ? items[0] : null // Imposta a null se items è vuoto
     );
-
+    const styles = useMemo(() => getStyles(darkMode), [darkMode]);
     const window = useWindowDimensions();
     const modalAnimation = useDynamicAnimation(() => ({
       translateY: window.height,
+      duration: 300, // Durata dell'animazione in millisecondi
     }));
 
     const [visible, setVisible] = useState(false);
     const open = useCallback(() => {
       setVisible(true);
-      modalAnimation.animateTo((current) => {
-        if (current.translateY !== window.height) {
-          return { translateY: window.height };
-        } else {
-          return { translateY: 0 };
-        }
-      });
+      modalAnimation.animateTo({ translateY: 0 }); // Sposta sempre verso l'alto
       onOpen?.();
-    }, [onOpen, setVisible, modalAnimation, window]);
-    const close = useCallback(() => {
-      setTimeout(() => {
-        setVisible(false);
-      }, 400);
-      modalAnimation.animateTo({ translateY: window.height });
+    }, [onOpen, modalAnimation]);
 
+    const close = useCallback(() => {
+      modalAnimation.animateTo({ translateY: window.height });
+      setTimeout(() => {
+        setVisible(false); // Nascondi il modal dopo l'animazione
+      }, 400); // Tempo uguale alla durata dell'animazione
       onClose?.();
-    }, [onClose, setVisible, modalAnimation, window]);
+    }, [onClose, modalAnimation, window]);
+
     useImperativeHandle(
       ref,
       () => ({
@@ -71,17 +75,15 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
       }),
       [close, open]
     );
+
     const onSelect = (item: ItemType) => {
       onSelectItem?.(item);
       setSelectItem(item);
     };
+
     const gesture = Gesture.Fling()
       .direction(Directions.DOWN)
-<<<<<<< Updated upstream
-      .onStart(close)
-=======
       .onEnd(close)
->>>>>>> Stashed changes
       .runOnJS(true);
 
     return (
@@ -94,7 +96,11 @@ export const SelectPicker = forwardRef<SelectPickerRef, SelectPickerProps>(
           disable={disable}
         />
 
-        <Modal visible={visible} onRequestClose={close}>
+        <Modal
+          visible={visible}
+          onRequestClose={close}
+          style={[pageStyle === 'Modal' ? styles.modalView : {}]}
+        >
           <GestureDetector gesture={gesture}>
             <SelectModal
               selectItem={selectItem}

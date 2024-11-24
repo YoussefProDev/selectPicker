@@ -1,37 +1,41 @@
-export const Colors = {
-  silver: '#BDBDBD',
-  gray: '#828282',
-  black: '#000',
-  whiteSmoke: 'whitesmoke',
-  white: '#fff',
-  athensGray: '#F7F8FA',
+// colors.ts
+
+export const LightModeColors = {
+  neutralBlack: '#000000',
+  neutralWhite: '#FFFFFF',
+  neutralSilver: '#BDBDBD',
+  neutralGray: '#828282',
+  lightGrayBackground: '#F7F8FA',
+  background: '#F1F1F1',
+  textPrimary: '#333333',
+  textSecondary: '#757575',
+  placeholderGray: '#9fa5aa',
+  highlightLight: '#D3D3D3', // Colore per l'elemento selezionato (light mode)
+  highlightDark: '#A1A1A1', // Aggiungi highlightDark per la modalità chiara
+  inputBackground: '#E6E6E6',
+  selectedItemBackground: '#E0E0E0',
+  borderColor: '#D1D1D1',
+  textFieldColor: '#A9A9A9', // Colore del placeholder in modalità chiara
+  backgroundModal: '#FFFFFF',
+};
+
+export const DarkModeColors = {
+  neutralBlack: '#000000',
+  neutralWhite: '#FFFFFF',
+  neutralSilver: '#BDBDBD',
+  neutralGray: '#828282',
+  lightGrayBackground: '#F7F8FA',
   background: '#1b1b1f',
-  textFieldColor: '#9fa5aa',
-  blueZodiac: '#2e2e32',
-  codGray: '#1A1A1A',
-  mercury: '#e6e6e6',
-  selectColor: '#414146',
-  // name color by hex: ~> http://chir.ag/projects/name-that-color/#FFFFFF
+  textPrimary: '#F9F9F9',
+  textSecondary: '#BDBDBD',
+  placeholderGray: '#9fa5aa',
+  highlightLight: '#D3D3D3', // Colore per l'elemento selezionato (light mode)
+  highlightDark: '#4C4C4C', // Aggiungi highlightDark per la modalità scura
+  inputBackground: '#2e2e32',
+  selectedItemBackground: '#3C3C3F',
+  borderColor: '#4A4A4A',
+  backgroundModal: '#2c2c2e',
+  textFieldColor: '#888888', // Colore del placeholder in modalità scura
 };
 
-export const ColorDarkMode = {
-  flagColor: Colors.black,
-  txtCountryCode: Colors.white,
-  txtCountryName: Colors.athensGray,
-  txtCallingCode: Colors.silver,
-  txtTitleModal: Colors.white,
-  backgroundModal: Colors.background,
-  backgroundInput: Colors.blueZodiac,
-  selectColor: Colors.selectColor,
-};
-
-export const ColorLightMode = {
-  flagColor: Colors.black,
-  txtCountryCode: Colors.black,
-  txtCountryName: Colors.codGray,
-  txtCallingCode: Colors.gray,
-  txtTitleModal: Colors.black,
-  backgroundModal: Colors.whiteSmoke,
-  backgroundInput: Colors.mercury,
-  selectColor: Colors.textFieldColor,
-};
+export const Colors = { LightModeColors, DarkModeColors };
