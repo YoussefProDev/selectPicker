@@ -1,95 +1,199 @@
-import { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { PickerSectionList, type ItemType, PickerList } from 'select-picker'; // Assicurati di aver importato il componente
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import React from 'react';
+import { StyleSheet, KeyboardAvoidingView, View, Text } from 'react-native';
+import {
+  GestureHandlerRootView,
+  TextInput,
+} from 'react-native-gesture-handler';
+import { PickerList, type ItemType } from 'select-picker';
 import currency from './constants/CommonCurrency.json';
-export default function App() {
-  const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
+export type Currency = {
+  symbol: string;
+  name: string;
+  symbol_native: string;
+  decimal_digits: number;
+  rounding: number;
+  code: string;
+  name_plural: string;
+  flag_emoji: string;
+};
+
+import { defaultStyles } from './styles/styles';
+import { Colors } from './styles/Colors';
+
+const CurrencyPage = () => {
+  const [currencyRate, setCurrencyRate] = React.useState<
+    Record<string, number>
+  >({});
+  const [lastUpdate, setLastUpdate] = React.useState<string | undefined>(
+    new Date().toISOString().split('T')[0]
+  );
+  const [darkMode, setDarkMode] = React.useState<boolean>(false);
+  const [valueFrom, setValueFrom] = React.useState<string>('');
+  const [valueTo, setValueTo] = React.useState<string>('');
+  const [canCalc, setCanCalc] = React.useState<boolean>(false);
   const items = Object.values(currency).map(({ name, code, ...data }) => ({
     key: code,
     label: name,
     value: code,
-    data: data,
+    data: { name, code, ...data },
   }));
-  const sections = [
-    {
-      sectionName: 'Valute Europee',
-      title: 'Sezione delle valute europee',
-      items: [
-        { key: 'EUR', label: 'Euro', value: 'EUR' },
-        { key: 'GBP', label: 'Sterlina Inglese', value: 'GBP' },
-        { key: 'CHF', label: 'Franco Svizzero', value: 'CHF', disabled: true },
-      ],
-    },
-    {
-      sectionName: 'Valute Americane',
-      title: 'Sezione delle valute americane',
-      items: [
-        { key: 'USD', label: 'Dollaro Statunitense', value: 'USD' },
-        { key: 'CAD', label: 'Dollaro Canadese', value: 'CAD' },
-        { key: 'MXN', label: 'Peso Messicano', value: 'MXN' },
-      ],
-    },
-  ];
+  const [currencyFrom, setCurrencyFrom] = React.useState<Currency>({
+    symbol: '€',
+    name: 'Euro',
+    symbol_native: '€',
+    decimal_digits: 2,
+    rounding: 0,
+    code: 'EUR',
+    name_plural: 'euros',
+    flag_emoji: '🇪🇺',
+  });
+  const [currencyTo, setCurrencyTo] = React.useState<Currency>({
+    symbol: '$',
+    name: 'US Dollar',
+    symbol_native: '$',
+    decimal_digits: 2,
+    rounding: 0,
+    code: 'USD',
+    name_plural: 'US dollars',
+    flag_emoji: '🇺🇸',
+  });
+
+  const getCurrencyRate = async (selectedCurrency: Currency) => {
+    try {
+      setCanCalc(false);
+      const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${selectedCurrency.code.toLowerCase()}.json`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const { date, ...rates } = data;
+      setLastUpdate(date);
+      setCurrencyRate(rates);
+    } catch (error) {
+      console.error('Error fetching currency rates: ', error);
+    } finally {
+      setCanCalc(true);
+    }
+  };
+
+  React.useEffect(() => {
+    getCurrencyRate(currencyFrom);
+  }, [currencyFrom]);
+
+  const calc = (type: 'from' | 'to', value: number) => {
+    const rate = currencyRate[currencyTo.code.toLowerCase()];
+    if (!rate) return;
+
+    if (type === 'from') {
+      const convertedValue = value * rate;
+      setValueTo(
+        convertedValue.toFixed(2) === '0.00' ? '' : convertedValue.toFixed(2)
+      );
+    } else {
+      const convertedValue = value / rate;
+      setValueFrom(
+        convertedValue.toFixed(2) === '0.00' ? '' : convertedValue.toFixed(2)
+      );
+    }
+  };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Text>{selectedItem?.label}</Text>
-      <View>
-        <PickerList items={items} pageStyle="FullPage" />
-        <PickerSectionList
-          sections={sections}
-          pageStyle="FullPage"
-          title="Seleziona una Valuta"
-          searchPlaceholder="Cerca valuta..."
-          textEmpty="Nessuna valuta trovata"
-          showCloseButton={true}
-          showModalTitle={true}
-          // darkMode={true}
-          // renderItem={(item) => (
-          //   <Text style={styles.triggerText}>
-          //     {item?.label ? item?.label : 'Seleziona una valuta'}
-          //   </Text>
-          // )}
-          // renderTrigger={(item) => (
-          //   <Text>Seleziona una valuta,{item?.label}</Text>
-          // )}
-          onSelectItem={(item) => {
-            setSelectedItem(item);
-            console.log(item);
-          }}
-          onOpen={() => console.log('Picker aperto')}
-          onClose={() => console.log('Picker chiuso')}
-          disable={false}
-        />
-      </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={[defaultStyles.container]}
+        behavior="height"
+        keyboardVerticalOffset={80}
+      >
+        <View style={[styles.inputContainer]}>
+          <PickerList
+            items={items}
+            onSelectItem={(data: ItemType) => {
+              setCurrencyFrom(data.data as Currency);
+              setValueFrom('');
+              setValueTo('');
+            }}
+            darkMode={darkMode}
+            title="Currency From"
+            searchPlaceholder="Search"
+            triggerStyle={{ container: styles.container }}
+          />
+          <TextInput
+            onChangeText={(text: string) => {
+              setValueFrom(text);
+              calc('from', +text);
+            }}
+            style={[styles.input, canCalc ? styles.enabled : styles.disabled]}
+            placeholder="From Value"
+            placeholderTextColor={Colors.gray}
+            keyboardType="numeric"
+            value={valueFrom}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <PickerList
+            items={items}
+            onSelectItem={(data: ItemType) => {
+              setCurrencyTo(data.data as Currency);
+              setValueFrom('');
+              setValueTo('');
+            }}
+            darkMode={darkMode}
+            title="Currency From"
+            searchPlaceholder="Search"
+            triggerStyle={{ container: styles.container }}
+          />
+          <TextInput
+            onChangeText={(text: string) => {
+              setValueTo(text);
+              calc('to', +text);
+            }}
+            style={[styles.input, canCalc ? styles.enabled : styles.disabled]}
+            placeholder="To Value"
+            placeholderTextColor={Colors.gray}
+            keyboardType="numeric"
+            value={valueTo}
+          />
+        </View>
+        <Text style={styles.lastUpdate}>Last Update: {lastUpdate}</Text>
+      </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  inputContainer: {
+    marginVertical: 20,
+    flexDirection: 'row',
+  },
+  input: {
+    backgroundColor: Colors.lightGray,
+    padding: 20,
+    borderRadius: 16,
+    fontSize: 20,
+    marginRight: 10,
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 70,
   },
-  customItem: {
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    marginBottom: 5,
-    borderRadius: 5,
+  container: {
+    backgroundColor: Colors.lightGray,
+    padding: 20,
+    borderRadius: 16,
+    marginRight: 10,
+    height: 70,
   },
-  itemText: {
-    fontSize: 16,
-    color: '#333',
+  enabled: {
+    backgroundColor: Colors.lightGray,
   },
-  customTrigger: {
-    padding: 15,
-    backgroundColor: '#007BFF',
-    borderRadius: 5,
+  disabled: {
+    backgroundColor: Colors.lightGray,
+    opacity: 0.5,
   },
-  triggerText: {
+  lastUpdate: {
     fontSize: 18,
-    color: '#fff',
+    color: Colors.gray,
+    marginTop: 'auto',
+    marginBottom: 40,
+    textAlign: 'center',
   },
 });
+
+export default CurrencyPage;

@@ -18,8 +18,8 @@ import { SelectModalSection } from '../components/SelectModal-section';
 import { getStyles } from '../styles';
 
 export const PickerSectionListComponent = forwardRef<
-  PickerListRef, // Tipo del ref
-  PickerSectionListProps // Tipo delle props
+  PickerListRef,
+  PickerSectionListProps
 >(
   (
     {
@@ -31,94 +31,122 @@ export const PickerSectionListComponent = forwardRef<
       disable = false,
       onOpen,
       onClose,
-      triggerStyle, // TriggerStyle può essere undefined o un oggetto con le proprietà opzionali
+      triggerStyle,
       modalStyle,
       title,
       searchPlaceholder,
       textEmpty,
       showCloseButton = true,
       showModalTitle = true,
-      pageStyle = 'FullPage', // Valore di default per pageStyle
+      pageStyle = 'FullPage',
     },
     ref
   ) => {
+    // Stili dinamici
     const styles = useMemo(() => getStyles(darkMode), [darkMode]);
-    const [selectItem, setSelectItem] = useState<ItemType | null>(
+
+    // Stati
+    const [selectedItem, setSelectedItem] = useState<ItemType | null>(
       sections[0]?.items[0] ?? null
     );
-    const window = useWindowDimensions();
+    const [isVisible, setIsVisible] = useState(false);
+
+    // Dimensioni finestra
+    const { height: windowHeight } = useWindowDimensions();
+
+    // Animazione dinamica per il Modal
     const modalAnimation = useDynamicAnimation(() => ({
-      translateY: window.height,
-      duration: 300, // Durata dell'animazione in millisecondi
+      translateY: windowHeight, // Partenza fuori dalla vista
     }));
 
-    const [visible, setVisible] = useState(false);
+    // Funzione per aprire il picker
     const open = useCallback(() => {
-      setVisible(true);
-      modalAnimation.animateTo({ translateY: 0 }); // Sposta sempre verso l'alto
+      setIsVisible(true);
+      modalAnimation.animateTo((current) => {
+        if (pageStyle === 'Modal') {
+          return { translateY: windowHeight * 0.1 };
+        }
+        return { ...current, translateY: 0 };
+      });
       onOpen?.();
-    }, [onOpen, modalAnimation]);
+    }, [modalAnimation, onOpen, windowHeight]);
 
+    // Funzione per chiudere il picker
     const close = useCallback(() => {
-      modalAnimation.animateTo({ translateY: window.height });
-      setTimeout(() => {
-        setVisible(false); // Nascondi il modal dopo l'animazione
-      }, 400); // Tempo uguale alla durata dell'animazione
+      modalAnimation.animateTo({ translateY: windowHeight });
+      setIsVisible(false);
+      // setTimeout(() => setIsVisible(false), 250); // Durata sincrona con l'animazione
       onClose?.();
-    }, [onClose, modalAnimation, window]);
+    }, [modalAnimation, onClose, windowHeight]);
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        open,
-        close,
-      }),
-      [open, close]
+    // Espone le funzioni open e close all'esterno tramite la ref
+    useImperativeHandle(ref, () => ({ open, close }), [open, close]);
+
+    // Gestione della selezione di un elemento
+    const handleSelect = useCallback(
+      (item: ItemType) => {
+        setSelectedItem(item);
+        onSelectItem?.(item);
+        close();
+      },
+      [close, onSelectItem]
     );
 
-    const onSelect = (item: ItemType) => {
-      onSelectItem?.(item);
-      setSelectItem(item);
-    };
-
-    // Gestione del gesto per chiudere il modale con swipe
-    const gesture = Gesture.Fling()
-      .direction(Directions.DOWN)
-      .onEnd(close)
-      .runOnJS(true);
+    // Configurazione della gesture per il Modal
+    const gesture = useMemo(
+      () =>
+        Gesture.Fling()
+          .direction(Directions.DOWN)
+          .onEnd(() => close())
+          .runOnJS(true),
+      [close]
+    );
 
     return (
       <View>
+        {/* Trigger per aprire il picker */}
         <SelectTrigger
           open={open}
-          selectItem={selectItem}
-          triggerStyle={triggerStyle || {}} // Assicurati che triggerStyle sia sempre un oggetto, anche se undefined
+          selectItem={selectedItem}
+          triggerStyle={triggerStyle || {}}
           renderTrigger={renderTrigger}
           disable={disable}
         />
 
+        {/* Modal che contiene il picker */}
         <Modal
-          visible={visible}
+          visible={isVisible}
           onRequestClose={close}
-          style={[pageStyle === 'Modal' ? styles.modalView : {}]}
+          animationType="slide"
+          transparent
         >
           <GestureDetector gesture={gesture}>
-            <SelectModalSection
-              selectItem={selectItem}
-              sections={sections}
-              onSelectItem={onSelect}
-              close={close}
-              title={title}
-              searchPlaceholder={searchPlaceholder}
-              textEmpty={textEmpty}
-              darkMode={darkMode}
-              modalStyle={modalStyle}
-              showCloseButton={showCloseButton}
-              showModalTitle={showModalTitle}
-              renderItem={renderItem}
-              modalAnimation={modalAnimation}
-              pageStyle={pageStyle} // Uso del valore di default se non specificato
-            />
+            <View
+              style={[
+                pageStyle === 'Modal'
+                  ? [styles.modalView]
+                  : styles.fullPageView,
+              ]}
+              accessible
+              accessibilityLabel="Picker modal"
+            >
+              <SelectModalSection
+                selectItem={selectedItem}
+                sections={sections}
+                onSelectItem={handleSelect}
+                close={close}
+                title={title}
+                searchPlaceholder={searchPlaceholder}
+                textEmpty={textEmpty}
+                darkMode={darkMode}
+                modalStyle={modalStyle}
+                showCloseButton={showCloseButton}
+                showModalTitle={showModalTitle}
+                renderItem={renderItem}
+                pageStyle={pageStyle}
+                modalAnimation={modalAnimation}
+              />
+            </View>
           </GestureDetector>
         </Modal>
       </View>

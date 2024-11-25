@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FC } from 'react';
+import { useEffect, useRef, useState, useMemo, type FC } from 'react';
 import {
   TouchableOpacity,
   StatusBar,
@@ -6,6 +6,7 @@ import {
   Text,
   KeyboardAvoidingView,
   View,
+  FlatList,
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
@@ -19,7 +20,7 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
   onSelectItem,
   title = 'Select',
   searchPlaceholder = 'Search',
-  textEmpty = 'Empty data',
+  textEmpty = 'No data available',
   darkMode = false,
   modalStyle,
   showCloseButton = true,
@@ -27,23 +28,23 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
   selectItem,
   close,
   modalAnimation,
-  pageStyle,
+
   renderSectionItem,
 }) => {
+  // Verifica se ci sono sezioni valide
   if (!sections[0]) return null;
 
+  // Stati
   const [search, setSearch] = useState('');
   const [sectionSelect, setSectionSelect] = useState<SectionType>(sections[0]);
-  const [itemsList, setItemsList] = useState<ItemType[]>([
-    ...sectionSelect.items,
-  ]);
+  const [itemsList, setItemsList] = useState<ItemType[]>(sectionSelect.items);
   const [selectedSection, setSelectedSection] = useState<string>(
     sections[0]?.sectionName || ''
   );
 
-  const styles = getStyles(darkMode);
-  const sectionListRef = useRef<FlashList<SectionType> | null>(null);
-  const flashListRef = useRef<FlashList<ItemType> | null>(null);
+  const styles = useMemo(() => getStyles(darkMode), [darkMode]);
+  const sectionListRef = useRef<FlatList<SectionType>>(null);
+  const flashListRef = useRef<FlashList<ItemType>>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -53,91 +54,97 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     };
   }, []);
 
-  const fuse = new Fuse<ItemType>(
-    sections.flatMap((section) => section.items),
-    {
-      shouldSort: true,
-      threshold: 0.6,
-      keys: ['key', 'label', 'data'],
-    }
+  // Configurazione Fuse.js per la ricerca
+  const fuse = useMemo(
+    () =>
+      new Fuse<ItemType>(
+        sections.flatMap((section) => section.items),
+        {
+          shouldSort: true,
+          threshold: 0.6,
+          keys: ['key', 'label', 'data'],
+        }
+      ),
+    [sections]
   );
 
+  // Gestione del filtro di ricerca
   const handleFilterChange = (value: string) => {
     setSearch(value);
+
     const filteredItems =
       value === ''
-        ? [...sectionSelect.items]
+        ? sectionSelect.items
         : fuse.search(value).map((result) => result.item);
+
     setItemsList(filteredItems);
     flashListRef.current?.scrollToOffset({ offset: 0 });
   };
 
+  // Gestione selezione item
   const onSelect = (item: ItemType) => {
-    setSearch('');
-    handleFilterChange('');
     onSelectItem?.(item);
     close();
   };
 
+  // Gestione selezione sezione
   const handleSectionSelect = (item: SectionType) => {
     setSectionSelect(item);
-    setItemsList([...item.items]);
+    setItemsList(item.items);
     setSelectedSection(item.sectionName);
   };
 
-  const renderSectionTemplate = ({ item }: { item: SectionType }) => {
-    return (
-      <TouchableOpacity style={[]} onPress={() => handleSectionSelect(item)}>
-        {renderSectionItem ? (
-          renderSectionItem(item)
-        ) : (
-          // <View style={[styles.section, modalStyle?.container]}>
-          <Text
-            style={[
-              styles.itemLabel,
-              modalStyle?.itemStyle,
-              item.sectionName === selectedSection &&
-                styles.selectedSectionItem,
-              ,
-            ]}
-          >
-            {item.sectionName}
-          </Text>
-          // </View>
-        )}
-      </TouchableOpacity>
-    );
-  };
+  // Render Sezioni
+  const renderSectionTemplate = ({ item }: { item: SectionType }) => (
+    <TouchableOpacity
+      style={[
+        styles.section,
+        item.sectionName === selectedSection && styles.selectedSectionItem,
+      ]}
+      onPress={() => handleSectionSelect(item)}
+      accessibilityLabel={`Section ${item.sectionName}`}
+      accessibilityHint="Tap to filter items by this section"
+    >
+      {renderSectionItem ? (
+        renderSectionItem(item)
+      ) : (
+        <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
+          {item.sectionName}
+        </Text>
+      )}
+    </TouchableOpacity>
+  );
 
+  // Render Items
   const renderItemTemplate = ({
     item,
     index,
   }: {
     item: ItemType;
     index: number;
-  }) => {
-    const isLastItem = index === itemsList.length - 1;
-    return (
-      <TouchableOpacity
-        style={[
-          isLastItem && styles.lastItem,
-          item.key === selectItem?.key && styles.selectedItem,
-        ]}
-        onPress={() => onSelect(item)}
-      >
-        {renderItem ? (
-          renderItem(item)
-        ) : (
-          <View style={[styles.item, modalStyle?.container]}>
-            <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
-              {item.label}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
-    );
-  };
+  }) => (
+    <TouchableOpacity
+      style={[
+        index === itemsList.length - 1 && styles.lastItem,
+        item.key === selectItem?.key && styles.selectedItem,
+      ]}
+      onPress={() => onSelect(item)}
+      accessibilityLabel={`Item ${item.label}`}
+      accessibilityHint="Tap to select this item"
+    >
+      {renderItem ? (
+        renderItem(item)
+      ) : (
+        <View style={[styles.item, modalStyle?.container]}>
+          <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
+            {item.label}
+          </Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
 
+  // Lista Vuota
   const emptyItem = () => (
     <View style={styles.listNullContainer}>
       <Text style={styles.txtEmpty}>{textEmpty}</Text>
@@ -147,13 +154,9 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
   return (
     <AnimatePresence>
       <MotiView
-        transition={{ duration: 500, type: 'timing' }}
         state={modalAnimation}
-        style={[
-          styles.container,
-          modalStyle?.container,
-          pageStyle === 'Modal' ? styles.modalView : null, // Modifica qui per usare modalView
-        ]}
+        transition={{ type: 'timing' }}
+        style={[styles.container, modalStyle?.container, styles.modalBorders]}
       >
         <View style={styles.header}>
           {showModalTitle && (
@@ -163,12 +166,9 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
           )}
           {showCloseButton && (
             <TouchableOpacity
-              onPress={() => {
-                close();
-                setSearch('');
-                handleFilterChange('');
-              }}
+              onPress={close}
               style={styles.searchClose}
+              accessibilityLabel="Close"
             >
               <Text style={styles.btnClose}>✖️</Text>
             </TouchableOpacity>
@@ -189,20 +189,19 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
           behavior="padding"
           style={[styles.listContainer, modalStyle?.listStyle]}
         >
-          <View style={{ marginBottom: 15 }}>
-            <FlashList
-              key={selectedSection}
+          {/* Lista Sezioni */}
+          <View style={styles.selectedSectionContainer}>
+            <FlatList
               keyboardShouldPersistTaps="handled"
               ref={sectionListRef}
               renderItem={renderSectionTemplate}
               data={sections}
               keyExtractor={(section) => section.sectionName}
               ListEmptyComponent={emptyItem}
-              estimatedItemSize={50}
               horizontal
             />
           </View>
-
+          {/* Lista Items */}
           <FlashList
             keyboardShouldPersistTaps="handled"
             ref={flashListRef}

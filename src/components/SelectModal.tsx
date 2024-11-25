@@ -27,7 +27,6 @@ export const SelectModal: FC<SelectModalProps> = ({
   selectItem,
   close,
   modalAnimation,
-  pageStyle,
 }) => {
   const [search, setSearch] = useState('');
   const [itemsList, setItemsList] = useState<ItemType[]>(items);
@@ -120,11 +119,11 @@ export const SelectModal: FC<SelectModalProps> = ({
   return (
     <AnimatePresence>
       <MotiView
-        transition={{ duration: 500, type: 'timing' }}
+        transition={{ type: 'timing' }}
         state={modalAnimation}
         style={[
           styles.container,
-          pageStyle === 'Modal' ? styles.modalView : null, // Modifica qui per usare modalView
+          styles.modalBorders, // Modifica qui per usare modalView
           modalStyle?.container,
         ]}
       >

@@ -5,8 +5,9 @@ import { Colors } from './colors';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 export const getStyles = (darkMode: boolean = false) => {
   const ColorsSet = darkMode ? Colors.DarkModeColors : Colors.LightModeColors;
-  const height = Dimensions.get('window').height;
-  const width = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+
+  // const width = Dimensions.get('window').width;
   return StyleSheet.create({
     container: {
       paddingTop: getStatusBarHeight(),
@@ -17,12 +18,6 @@ export const getStyles = (darkMode: boolean = false) => {
       paddingHorizontal: 15,
     },
 
-    // selectedItemText: {
-    //   width: 100,
-    //   fontSize: 16,
-    //   fontWeight: 'bold',
-    //   color: ColorsSet.textFieldColor, // Colore del testo basato sulla modalità
-    // },
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -77,22 +72,13 @@ export const getStyles = (darkMode: boolean = false) => {
     lastItem: {
       marginBottom: 20,
     },
-    selectedItemContainer: {
-      padding: 10,
-      backgroundColor: ColorsSet.background, // Cambia il colore di sfondo in base alla modalità
-      borderRadius: 5,
-      marginLeft: 10,
-
-      width: width,
+    selectedSectionContainer: {
+      marginBottom: 10,
+      height: 50,
     },
     selectedSectionItem: {
-      // backgroundColor: ColorsSet.background, // Cambia il colore di sfondo in base alla modalità
-      padding: 10,
       borderRadius: 10,
       backgroundColor: ColorsSet.selectedItemBackground,
-      // marginBottom: 10,
-      // alignItems: 'center',
-      // justifyContent: 'center',
     },
     selectedItem: {
       backgroundColor: ColorsSet.selectedItemBackground, // Colore di selezione
@@ -105,16 +91,24 @@ export const getStyles = (darkMode: boolean = false) => {
       color: ColorsSet.neutralGray, // Colore del testo quando la lista è vuota
     },
     modalView: {
-      backgroundColor: ColorsSet.background, // Colore diverso per la modalità scura e chiara
-      borderRadius: 10,
-      // padding: 20,
-      height: height * 0.7,
+      backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
+
+      height: windowHeight * 0.9,
+    },
+    fullPageView: {
+      backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
+
+      height: windowHeight,
     },
     fontDefault: {
       color: ColorsSet.neutralBlack, // Colore del testo di default
     },
     justifyCenter: {
       justifyContent: 'center',
+    },
+    modalBorders: {
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40,
     },
   });
 };
