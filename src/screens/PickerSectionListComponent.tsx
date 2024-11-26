@@ -39,6 +39,9 @@ export const PickerSectionListComponent = forwardRef<
       showCloseButton = true,
       showModalTitle = true,
       pageStyle = 'FullPage',
+      selectedSection,
+      // selectedSection,
+      selectedItem: choseditem,
     },
     ref
   ) => {
@@ -47,7 +50,7 @@ export const PickerSectionListComponent = forwardRef<
 
     // Stati
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(
-      sections[0]?.items[0] ?? null
+      choseditem ?? sections[0]?.items[0] ?? null
     );
     const [isVisible, setIsVisible] = useState(false);
 
@@ -69,7 +72,7 @@ export const PickerSectionListComponent = forwardRef<
         return { ...current, translateY: 0 };
       });
       onOpen?.();
-    }, [modalAnimation, onOpen, windowHeight]);
+    }, [modalAnimation, onOpen, windowHeight, pageStyle]);
 
     // Funzione per chiudere il picker
     const close = useCallback(() => {
@@ -145,6 +148,7 @@ export const PickerSectionListComponent = forwardRef<
                 renderItem={renderItem}
                 pageStyle={pageStyle}
                 modalAnimation={modalAnimation}
+                selectedSection={selectedSection}
               />
             </View>
           </GestureDetector>

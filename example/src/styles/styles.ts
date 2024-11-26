@@ -5,6 +5,7 @@ import { Colors } from './Colors';
 export const defaultStyles = StyleSheet.create({
   container: {
     flex: 1,
+    height: 'auto',
     backgroundColor: Colors.background,
     padding: 16,
     alignItems: 'center',

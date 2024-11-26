@@ -1,10 +1,16 @@
 import React from 'react';
-import { StyleSheet, KeyboardAvoidingView, View, Text } from 'react-native';
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import {
   GestureHandlerRootView,
   TextInput,
 } from 'react-native-gesture-handler';
-import { PickerList, type ItemType } from 'select-picker';
+import { PickerList, PickerSectionList, type ItemType } from 'select-picker';
 import currency from './constants/CommonCurrency.json';
 export type Currency = {
   symbol: string;
@@ -28,46 +34,29 @@ const CurrencyPage = () => {
     new Date().toISOString().split('T')[0]
   );
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
-  const [valueFrom, setValueFrom] = React.useState<string>('');
-  const [valueTo, setValueTo] = React.useState<string>('');
-  const [canCalc, setCanCalc] = React.useState<boolean>(false);
-  const items = Object.values(currency).map(({ name, code, ...data }) => ({
-    key: code,
-    label: name,
-    value: code,
-    data: { name, code, ...data },
-  }));
-  const [currencyFrom, setCurrencyFrom] = React.useState<Currency>({
-    symbol: '€',
-    name: 'Euro',
-    symbol_native: '€',
-    decimal_digits: 2,
-    rounding: 0,
-    code: 'EUR',
-    name_plural: 'euros',
-    flag_emoji: '🇪🇺',
-  });
-  const [currencyTo, setCurrencyTo] = React.useState<Currency>({
-    symbol: '$',
-    name: 'US Dollar',
-    symbol_native: '$',
-    decimal_digits: 2,
-    rounding: 0,
-    code: 'USD',
-    name_plural: 'US dollars',
-    flag_emoji: '🇺🇸',
-  });
+
+  const items = Object.values(currency).map(
+    ({ name, code, flag_emoji, ...data }) => ({
+      key: code,
+      label: `${flag_emoji}  ${name}`,
+      value: flag_emoji,
+      data: { name, flag_emoji, code, ...data },
+    })
+  );
 
   const getCurrencyRate = async (selectedCurrency: Currency) => {
     try {
       setCanCalc(false);
       const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${selectedCurrency.code.toLowerCase()}.json`;
+
       const response = await fetch(url);
       const data = await response.json();
 
       const { date, ...rates } = data;
+
       setLastUpdate(date);
-      setCurrencyRate(rates);
+      setCurrencyRate(rates[selectedCurrency.code.toLowerCase()]);
+      return rates[selectedCurrency.code.toLowerCase()];
     } catch (error) {
       console.error('Error fetching currency rates: ', error);
     } finally {
@@ -79,33 +68,16 @@ const CurrencyPage = () => {
     getCurrencyRate(currencyFrom);
   }, [currencyFrom]);
 
-  const calc = (type: 'from' | 'to', value: number) => {
-    const rate = currencyRate[currencyTo.code.toLowerCase()];
-    if (!rate) return;
-
-    if (type === 'from') {
-      const convertedValue = value * rate;
-      setValueTo(
-        convertedValue.toFixed(2) === '0.00' ? '' : convertedValue.toFixed(2)
-      );
-    } else {
-      const convertedValue = value / rate;
-      setValueFrom(
-        convertedValue.toFixed(2) === '0.00' ? '' : convertedValue.toFixed(2)
-      );
-    }
-  };
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
         style={[defaultStyles.container]}
-        behavior="height"
+        behavior="padding"
         keyboardVerticalOffset={80}
       >
         <View style={[styles.inputContainer]}>
-          <PickerList
-            items={items}
+          <PickerSectionList
+            sections={items}
             onSelectItem={(data: ItemType) => {
               setCurrencyFrom(data.data as Currency);
               setValueFrom('');
@@ -115,6 +87,12 @@ const CurrencyPage = () => {
             title="Currency From"
             searchPlaceholder="Search"
             triggerStyle={{ container: styles.container }}
+            selectedItem={{
+              key: currencyFrom.code,
+              label: `${currencyFrom.flag_emoji}  ${currencyFrom.name}`,
+              value: currencyFrom.code,
+              data: currencyFrom,
+            }}
           />
           <TextInput
             onChangeText={(text: string) => {
@@ -128,32 +106,10 @@ const CurrencyPage = () => {
             value={valueFrom}
           />
         </View>
-        <View style={styles.inputContainer}>
-          <PickerList
-            items={items}
-            onSelectItem={(data: ItemType) => {
-              setCurrencyTo(data.data as Currency);
-              setValueFrom('');
-              setValueTo('');
-            }}
-            darkMode={darkMode}
-            title="Currency From"
-            searchPlaceholder="Search"
-            triggerStyle={{ container: styles.container }}
-          />
-          <TextInput
-            onChangeText={(text: string) => {
-              setValueTo(text);
-              calc('to', +text);
-            }}
-            style={[styles.input, canCalc ? styles.enabled : styles.disabled]}
-            placeholder="To Value"
-            placeholderTextColor={Colors.gray}
-            keyboardType="numeric"
-            value={valueTo}
-          />
-        </View>
-        <Text style={styles.lastUpdate}>Last Update: {lastUpdate}</Text>
+
+        <TouchableOpacity onPress={() => setDarkMode((prev) => !prev)}>
+          <Text>Change DarkMode</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
@@ -170,8 +126,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     fontSize: 20,
     marginRight: 10,
-    flex: 1,
     height: 70,
+    flex: 1,
   },
   container: {
     backgroundColor: Colors.lightGray,
@@ -190,7 +146,9 @@ const styles = StyleSheet.create({
   lastUpdate: {
     fontSize: 18,
     color: Colors.gray,
-    marginTop: 'auto',
+    // flex: 1,
+    // justifyContent: 'flex-end',
+    // marginTop: 'auto',
     marginBottom: 40,
     textAlign: 'center',
   },

@@ -38,12 +38,13 @@ export const PickerListComponent = forwardRef<PickerListRef, PickerListProps>(
       showCloseButton = true,
       showModalTitle = true,
       pageStyle,
+      selectedItem: choseditem,
     },
     ref
   ) => {
     // Assicurati che selectItem non sia undefined
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(
-      items[0] ? items[0] : null // Imposta a null se items è vuoto
+      choseditem ? choseditem : (items[0] ?? null) // Imposta a null se items è vuoto
     );
     // Stili dinamici
     const styles = useMemo(() => getStyles(darkMode), [darkMode]);
@@ -68,7 +69,7 @@ export const PickerListComponent = forwardRef<PickerListRef, PickerListProps>(
         return { ...current, translateY: 0 };
       });
       onOpen?.();
-    }, [modalAnimation, onOpen, windowHeight]);
+    }, [modalAnimation, onOpen, windowHeight, pageStyle]);
 
     // Funzione per chiudere il picker
     const close = useCallback(() => {

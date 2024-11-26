@@ -76,6 +76,7 @@ export type SelectModalSectionProps = {
   renderItem?: (item: ItemType | null) => ReactNode; // Funzione per renderizzare un item
   renderSectionItem?: (section: SectionType | null) => ReactNode; // Funzione per renderizzare una sezione
   modalAnimation: UseDynamicAnimationState<StyleProp<ViewStyle>>; // Stato dell'animazione dinamica del modale
+  selectedSection?: SectionType;
 };
 
 // Riferimento al componente PickerList per controlli programmatici
@@ -103,6 +104,7 @@ export type PickerListProps = {
   textEmpty?: string; // Testo da mostrare quando la lista è vuota
   showCloseButton?: boolean; // Mostra il pulsante di chiusura
   showModalTitle?: boolean; // Mostra il titolo del modale
+  selectedItem?: ItemType;
 };
 
 // Props per il componente PickerSectionList
@@ -124,4 +126,6 @@ export type PickerSectionListProps = {
   textEmpty?: string; // Testo da mostrare quando la lista è vuota
   showCloseButton?: boolean; // Mostra il pulsante di chiusura
   showModalTitle?: boolean; // Mostra il titolo del modale
+  selectedItem?: ItemType;
+  selectedSection?: SectionType;
 };

@@ -28,15 +28,17 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
   selectItem,
   close,
   modalAnimation,
-
+  selectedSection: chosedSection,
   renderSectionItem,
 }) => {
   // Verifica se ci sono sezioni valide
-  if (!sections[0]) return null;
+  // if (!sections[0]) return ;
 
   // Stati
   const [search, setSearch] = useState('');
-  const [sectionSelect, setSectionSelect] = useState<SectionType>(sections[0]);
+  const [sectionSelect, setSectionSelect] = useState<SectionType>(
+    chosedSection ?? sections[0]
+  );
   const [itemsList, setItemsList] = useState<ItemType[]>(sectionSelect.items);
   const [selectedSection, setSelectedSection] = useState<string>(
     sections[0]?.sectionName || ''

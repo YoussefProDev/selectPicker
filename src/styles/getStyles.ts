@@ -1,16 +1,16 @@
 // styles.ts
 
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { Colors } from './colors';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 export const getStyles = (darkMode: boolean = false) => {
   const ColorsSet = darkMode ? Colors.DarkModeColors : Colors.LightModeColors;
   const windowHeight = Dimensions.get('window').height;
-
+  const marginTopByPlatform = Platform.OS === 'ios' ? 50 : getStatusBarHeight();
   // const width = Dimensions.get('window').width;
   return StyleSheet.create({
     container: {
-      paddingTop: getStatusBarHeight(),
+      paddingTop: marginTopByPlatform,
       flex: 1,
       backgroundColor: ColorsSet.background, // Sfondo principale
       // paddingTop: 20,
