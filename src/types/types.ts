@@ -63,7 +63,7 @@ export type SelectModalProps = {
 export type SelectModalSectionProps = {
   pageStyle: 'FullPage' | 'Modal'; // Tipo di visualizzazione (pagina intera o modale)
   sections: SectionType[]; // Lista delle sezioni da mostrare
-  selectItem: ItemType | null; // Item attualmente selezionato
+  selectItem: ItemType; // Item attualmente selezionato
   onSelectItem: (item: ItemType) => void; // Callback per selezionare un item
   title?: string; // Titolo del modale
   searchPlaceholder?: string; // Placeholder per il campo di ricerca
@@ -126,6 +126,6 @@ export type PickerSectionListProps = {
   textEmpty?: string; // Testo da mostrare quando la lista è vuota
   showCloseButton?: boolean; // Mostra il pulsante di chiusura
   showModalTitle?: boolean; // Mostra il titolo del modale
-  selectedItem?: ItemType;
+  selectedItem: ItemType;
   selectedSection?: SectionType;
 };

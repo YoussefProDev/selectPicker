@@ -28,20 +28,21 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
   selectItem,
   close,
   modalAnimation,
-  selectedSection: chosedSection,
   renderSectionItem,
 }) => {
-  // Verifica se ci sono sezioni valide
-  // if (!sections[0]) return ;
-
-  // Stati
+  if (!sections[0]) return;
+  // Stati iniziali
   const [search, setSearch] = useState('');
   const [sectionSelect, setSectionSelect] = useState<SectionType>(
-    chosedSection ?? sections[0]
+    sections.find((section) =>
+      section.items.some((item) => item.key === selectItem?.key)
+    ) ?? sections[0]
   );
-  const [itemsList, setItemsList] = useState<ItemType[]>(sectionSelect.items);
+  const [itemsList, setItemsList] = useState<ItemType[]>(
+    sectionSelect?.items ?? []
+  );
   const [selectedSection, setSelectedSection] = useState<string>(
-    sections[0]?.sectionName || ''
+    sectionSelect.sectionName
   );
 
   const styles = useMemo(() => getStyles(darkMode), [darkMode]);
@@ -56,7 +57,7 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     };
   }, []);
 
-  // Configurazione Fuse.js per la ricerca
+  // Configurazione di Fuse.js per la ricerca
   const fuse = useMemo(
     () =>
       new Fuse<ItemType>(
@@ -70,33 +71,31 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     [sections]
   );
 
-  // Gestione del filtro di ricerca
+  // Filtraggio degli elementi
   const handleFilterChange = (value: string) => {
     setSearch(value);
-
     const filteredItems =
       value === ''
         ? sectionSelect.items
         : fuse.search(value).map((result) => result.item);
-
     setItemsList(filteredItems);
     flashListRef.current?.scrollToOffset({ offset: 0 });
   };
 
-  // Gestione selezione item
+  // Selezione di un elemento
   const onSelect = (item: ItemType) => {
     onSelectItem?.(item);
     close();
   };
 
-  // Gestione selezione sezione
+  // Selezione di una sezione
   const handleSectionSelect = (item: SectionType) => {
     setSectionSelect(item);
     setItemsList(item.items);
     setSelectedSection(item.sectionName);
   };
 
-  // Render Sezioni
+  // Componenti di rendering separati
   const renderSectionTemplate = ({ item }: { item: SectionType }) => (
     <TouchableOpacity
       style={[
@@ -117,7 +116,6 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     </TouchableOpacity>
   );
 
-  // Render Items
   const renderItemTemplate = ({
     item,
     index,
@@ -146,13 +144,14 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     </TouchableOpacity>
   );
 
-  // Lista Vuota
+  // Componente lista vuota
   const emptyItem = () => (
     <View style={styles.listNullContainer}>
       <Text style={styles.txtEmpty}>{textEmpty}</Text>
     </View>
   );
 
+  // Componente principale
   return (
     <AnimatePresence>
       <MotiView
@@ -160,6 +159,7 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
         transition={{ type: 'timing' }}
         style={[styles.container, modalStyle?.container, styles.modalBorders]}
       >
+        {/* Header */}
         <View style={styles.header}>
           {showModalTitle && (
             <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
@@ -176,22 +176,26 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
             </TouchableOpacity>
           )}
         </View>
+
+        {/* Search Bar */}
         <View style={styles.search}>
           <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
             <TextInput
               onChangeText={handleFilterChange}
               value={search}
               placeholder={searchPlaceholder}
-              placeholderTextColor={styles.fontDefault.color}
+              placeholderTextColor={styles.textSearch.color}
               style={[styles.textSearch, styles.textInput]}
             />
           </View>
         </View>
+
+        {/* Lista Sezioni e Items */}
         <KeyboardAvoidingView
           behavior="padding"
           style={[styles.listContainer, modalStyle?.listStyle]}
         >
-          {/* Lista Sezioni */}
+          {/* FlatList per Sezioni */}
           <View style={styles.selectedSectionContainer}>
             <FlatList
               keyboardShouldPersistTaps="handled"
@@ -203,7 +207,8 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
               horizontal
             />
           </View>
-          {/* Lista Items */}
+
+          {/* FlashList per Items */}
           <FlashList
             keyboardShouldPersistTaps="handled"
             ref={flashListRef}

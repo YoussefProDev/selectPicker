@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
-import { Colors, getStyles } from '../styles';
+import { getStyles } from '../styles';
 import type { SelectModalProps, ItemType } from '../types';
 import { FlashList } from '@shopify/flash-list';
 
@@ -148,10 +148,7 @@ export const SelectModal: FC<SelectModalProps> = ({
               onChangeText={handleFilterChange}
               value={search}
               placeholder={searchPlaceholder}
-              placeholderTextColor={
-                Colors[darkMode ? 'DarkModeColors' : 'LightModeColors']
-                  .textFieldColor
-              }
+              placeholderTextColor={styles.textSearch.color}
               style={[styles.textSearch, styles.textInput]}
             />
           </View>

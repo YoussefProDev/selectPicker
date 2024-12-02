@@ -49,7 +49,7 @@ export const getStyles = (darkMode: boolean = false) => {
     },
     textSearch: {
       fontSize: 16,
-      color: ColorsSet.neutralBlack, // Colore del testo nella barra di ricerca
+      color: ColorsSet.textPrimary, // Colore del testo nella barra di ricerca
     },
     textInput: {
       padding: 10,

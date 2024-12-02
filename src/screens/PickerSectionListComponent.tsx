@@ -39,20 +39,13 @@ export const PickerSectionListComponent = forwardRef<
       showCloseButton = true,
       showModalTitle = true,
       pageStyle = 'FullPage',
-      selectedSection,
       // selectedSection,
-      selectedItem: choseditem,
+      selectedItem: chosenItem,
     },
     ref
   ) => {
     // Stili dinamici
     const styles = useMemo(() => getStyles(darkMode), [darkMode]);
-
-    // Stati
-    const [selectedItem, setSelectedItem] = useState<ItemType | null>(
-      choseditem ?? sections[0]?.items[0] ?? null
-    );
-    const [isVisible, setIsVisible] = useState(false);
 
     // Dimensioni finestra
     const { height: windowHeight } = useWindowDimensions();
@@ -62,14 +55,21 @@ export const PickerSectionListComponent = forwardRef<
       translateY: windowHeight, // Partenza fuori dalla vista
     }));
 
+    // Gestione dello stato per il modal visibile e l'elemento selezionato
+    // const [selectedItem, setSelectedItem] = useState<ItemType>(chosenItem);
+    // console.log('chose:', chosenItem);
+    // console.log('select:', selectedItem);
+    // const [selectedItem, setSelectedItem] = useState<ItemType | null>(
+    //   selectedSection?.items[0] || choseditem || sections[0]?.items[0] || null
+    // );
+    const [isVisible, setIsVisible] = useState(false);
+
     // Funzione per aprire il picker
     const open = useCallback(() => {
       setIsVisible(true);
       modalAnimation.animateTo((current) => {
-        if (pageStyle === 'Modal') {
-          return { translateY: windowHeight * 0.1 };
-        }
-        return { ...current, translateY: 0 };
+        const targetTranslateY = pageStyle === 'Modal' ? windowHeight * 0.1 : 0;
+        return { ...current, translateY: targetTranslateY };
       });
       onOpen?.();
     }, [modalAnimation, onOpen, windowHeight, pageStyle]);
@@ -78,7 +78,6 @@ export const PickerSectionListComponent = forwardRef<
     const close = useCallback(() => {
       modalAnimation.animateTo({ translateY: windowHeight });
       setIsVisible(false);
-      // setTimeout(() => setIsVisible(false), 250); // Durata sincrona con l'animazione
       onClose?.();
     }, [modalAnimation, onClose, windowHeight]);
 
@@ -88,29 +87,25 @@ export const PickerSectionListComponent = forwardRef<
     // Gestione della selezione di un elemento
     const handleSelect = useCallback(
       (item: ItemType) => {
-        setSelectedItem(item);
-        onSelectItem?.(item);
-        close();
+        // setSelectedItem(item); // Aggiorna il selectedItem localmente
+        onSelectItem?.(item); // Passa la selezione al genitore
+        close(); // Chiudi il modal dopo la selezione
       },
       [close, onSelectItem]
     );
 
     // Configurazione della gesture per il Modal
-    const gesture = useMemo(
-      () =>
-        Gesture.Fling()
-          .direction(Directions.DOWN)
-          .onEnd(() => close())
-          .runOnJS(true),
-      [close]
-    );
+    const gesture = Gesture.Fling()
+      .direction(Directions.DOWN)
+      .onEnd(() => close())
+      .runOnJS(true);
 
     return (
       <View>
         {/* Trigger per aprire il picker */}
         <SelectTrigger
           open={open}
-          selectItem={selectedItem}
+          selectItem={chosenItem} // Mostra l'item selezionato
           triggerStyle={triggerStyle || {}}
           renderTrigger={renderTrigger}
           disable={disable}
@@ -134,9 +129,9 @@ export const PickerSectionListComponent = forwardRef<
               accessibilityLabel="Picker modal"
             >
               <SelectModalSection
-                selectItem={selectedItem}
+                selectItem={chosenItem} // Passa l'item selezionato al Modal
                 sections={sections}
-                onSelectItem={handleSelect}
+                onSelectItem={handleSelect} // Gestisce la selezione
                 close={close}
                 title={title}
                 searchPlaceholder={searchPlaceholder}
@@ -148,7 +143,6 @@ export const PickerSectionListComponent = forwardRef<
                 renderItem={renderItem}
                 pageStyle={pageStyle}
                 modalAnimation={modalAnimation}
-                selectedSection={selectedSection}
               />
             </View>
           </GestureDetector>
