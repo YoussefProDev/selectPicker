@@ -1,2 +1,1 @@
-export * from './PickerListComponent';
-export * from './PickerSectionListComponent';
+export * from './PickerComponent'

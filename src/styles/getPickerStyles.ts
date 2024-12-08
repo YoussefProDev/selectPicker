@@ -1,19 +1,17 @@
-// styles.ts
-
 import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { Colors } from './colors';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-export const getStyles = (darkMode: boolean = false) => {
+
+export const getPickerStyles = (darkMode: boolean = false) => { // Corretto
   const ColorsSet = darkMode ? Colors.DarkModeColors : Colors.LightModeColors;
   const windowHeight = Dimensions.get('window').height;
   const marginTopByPlatform = Platform.OS === 'ios' ? 50 : getStatusBarHeight();
-  // const width = Dimensions.get('window').width;
+  
   return StyleSheet.create({
     container: {
       paddingTop: marginTopByPlatform,
       flex: 1,
       backgroundColor: ColorsSet.background, // Sfondo principale
-      // paddingTop: 20,
       paddingBottom: 30,
       paddingHorizontal: 15,
     },
@@ -36,8 +34,6 @@ export const getStyles = (darkMode: boolean = false) => {
     },
     btnClose: {
       fontSize: 18,
-
-      // color: ColorsSet.textSecondary, // Colore del testo nel pulsante
     },
     search: {
       marginBottom: 10,
@@ -92,12 +88,10 @@ export const getStyles = (darkMode: boolean = false) => {
     },
     modalView: {
       backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
-
       height: windowHeight * 0.9,
     },
     fullPageView: {
       backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
-
       height: windowHeight,
     },
     fontDefault: {

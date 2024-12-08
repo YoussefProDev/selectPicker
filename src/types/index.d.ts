@@ -1,33 +1,11 @@
-import { PickerList, PickerSectionList } from '../index';
+import { PickerComponent } from '../index';
 import {
-  ItemType,
-  SelectModalProps,
-  PickerListProps,
-  PickerListRef,
-  SelectTriggerProps,
-  SectionType,
-  ModalStyle,
-  PickerSectionListProps,
-  RenderItem,
-  SelectModalSectionProps,
-  TriggerStyle,
+Item,ModalStyle,PickerModalProps,PickerModalSectionProps,PickerProps,PickerRef,Section,SelectTriggerProps,TriggerStyle
 } from './types';
+
 declare module 'select-picker' {
-  // Esportazione della classe PickerListComponent
-  // export class PickerList extends React.Component<PickerListProps> {}
-  export {
-    PickerList,
-    PickerSectionList,
-    ItemType,
-    SelectModalProps,
-    PickerListProps,
-    PickerListRef,
-    SelectTriggerProps,
-    SectionType,
-    ModalStyle,
-    PickerSectionListProps,
-    RenderItem,
-    SelectModalSectionProps,
-    TriggerStyle,
+  // Esportazione dei componenti e tipi dal modulo 'select-picker'
+  export {PickerComponent,
+Item,ModalStyle,PickerModalProps,PickerModalSectionProps,PickerProps,PickerRef,Section,SelectTriggerProps,TriggerStyle
   };
 }

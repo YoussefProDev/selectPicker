@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
-import { getStyles } from '../styles';
+import { getPickerStyles } from '../styles';
 import { FlashList } from '@shopify/flash-list';
-import type { ItemType, SectionType, SelectModalSectionProps } from '../types';
+import type { Item, Section, PickerModalSectionProps } from '../types';
 
-export const SelectModalSection: FC<SelectModalSectionProps> = ({
+export const PickerModalSection: FC<PickerModalSectionProps> = ({
   sections,
   renderItem,
   onSelectItem,
@@ -25,29 +25,29 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
   modalStyle,
   showCloseButton = true,
   showModalTitle = true,
-  selectItem,
+  selectedItem,
   close,
   modalAnimation,
   renderSectionItem,
 }) => {
   if (!sections[0]) return;
-  // Stati iniziali
+
   const [search, setSearch] = useState('');
-  const [sectionSelect, setSectionSelect] = useState<SectionType>(
+  const [sectionSelect, setSectionSelect] = useState<Section>(
     sections.find((section) =>
-      section.items.some((item) => item.key === selectItem?.key)
+      section.items.some((item) => item.key === selectedItem?.key)
     ) ?? sections[0]
   );
-  const [itemsList, setItemsList] = useState<ItemType[]>(
+  const [itemsList, setItemsList] = useState<Item[]>(
     sectionSelect?.items ?? []
   );
   const [selectedSection, setSelectedSection] = useState<string>(
-    sectionSelect.sectionName
+    sectionSelect.name
   );
 
-  const styles = useMemo(() => getStyles(darkMode), [darkMode]);
-  const sectionListRef = useRef<FlatList<SectionType>>(null);
-  const flashListRef = useRef<FlashList<ItemType>>(null);
+  const styles = useMemo(() => getPickerStyles(darkMode), [darkMode]);
+  const sectionListRef = useRef<FlatList<Section>>(null);
+  const flashListRef = useRef<FlashList<Item>>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -57,10 +57,9 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     };
   }, []);
 
-  // Configurazione di Fuse.js per la ricerca
   const fuse = useMemo(
     () =>
-      new Fuse<ItemType>(
+      new Fuse<Item>(
         sections.flatMap((section) => section.items),
         {
           shouldSort: true,
@@ -71,7 +70,6 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     [sections]
   );
 
-  // Filtraggio degli elementi
   const handleFilterChange = (value: string) => {
     setSearch(value);
     const filteredItems =
@@ -82,35 +80,32 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     flashListRef.current?.scrollToOffset({ offset: 0 });
   };
 
-  // Selezione di un elemento
-  const onSelect = (item: ItemType) => {
+  const onSelect = (item: Item) => {
     onSelectItem?.(item);
     close();
   };
 
-  // Selezione di una sezione
-  const handleSectionSelect = (item: SectionType) => {
+  const handleSectionSelect = (item: Section) => {
     setSectionSelect(item);
     setItemsList(item.items);
-    setSelectedSection(item.sectionName);
+    setSelectedSection(item.name);
   };
 
-  // Componenti di rendering separati
-  const renderSectionTemplate = ({ item }: { item: SectionType }) => (
+  const renderSectionTemplate = ({ item }: { item: Section }) => (
     <TouchableOpacity
       style={[
         styles.section,
-        item.sectionName === selectedSection && styles.selectedSectionItem,
+        item.name === selectedSection && styles.selectedSectionItem,
       ]}
       onPress={() => handleSectionSelect(item)}
-      accessibilityLabel={`Section ${item.sectionName}`}
+      accessibilityLabel={`Section ${item.name}`}
       accessibilityHint="Tap to filter items by this section"
     >
       {renderSectionItem ? (
         renderSectionItem(item)
       ) : (
         <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
-          {item.sectionName}
+          {item.name}
         </Text>
       )}
     </TouchableOpacity>
@@ -120,13 +115,13 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     item,
     index,
   }: {
-    item: ItemType;
+    item: Item;
     index: number;
   }) => (
     <TouchableOpacity
       style={[
         index === itemsList.length - 1 && styles.lastItem,
-        item.key === selectItem?.key && styles.selectedItem,
+        item.key === selectedItem?.key && styles.selectedItem,
       ]}
       onPress={() => onSelect(item)}
       accessibilityLabel={`Item ${item.label}`}
@@ -144,14 +139,12 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
     </TouchableOpacity>
   );
 
-  // Componente lista vuota
   const emptyItem = () => (
     <View style={styles.listNullContainer}>
       <Text style={styles.txtEmpty}>{textEmpty}</Text>
     </View>
   );
 
-  // Componente principale
   return (
     <AnimatePresence>
       <MotiView
@@ -159,7 +152,6 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
         transition={{ type: 'timing' }}
         style={[styles.container, modalStyle?.container, styles.modalBorders]}
       >
-        {/* Header */}
         <View style={styles.header}>
           {showModalTitle && (
             <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
@@ -177,7 +169,6 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
           )}
         </View>
 
-        {/* Search Bar */}
         <View style={styles.search}>
           <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
             <TextInput
@@ -190,25 +181,22 @@ export const SelectModalSection: FC<SelectModalSectionProps> = ({
           </View>
         </View>
 
-        {/* Lista Sezioni e Items */}
         <KeyboardAvoidingView
           behavior="padding"
           style={[styles.listContainer, modalStyle?.listStyle]}
         >
-          {/* FlatList per Sezioni */}
           <View style={styles.selectedSectionContainer}>
             <FlatList
               keyboardShouldPersistTaps="handled"
               ref={sectionListRef}
               renderItem={renderSectionTemplate}
               data={sections}
-              keyExtractor={(section) => section.sectionName}
+              keyExtractor={(section) => section.name}
               ListEmptyComponent={emptyItem}
               horizontal
             />
           </View>
 
-          {/* FlashList per Items */}
           <FlashList
             keyboardShouldPersistTaps="handled"
             ref={flashListRef}

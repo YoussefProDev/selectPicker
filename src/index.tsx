@@ -1,36 +1,24 @@
-import { forwardRef } from 'react';
+import { forwardRef } from "react";
+import type { PickerProps, PickerRef } from "./types";
+import { Picker } from "./screens";
 
-import {
-  type PickerListProps,
-  type PickerListRef,
-  type PickerSectionListProps,
-} from './types';
-import { PickerListComponent, PickerSectionListComponent } from './screens';
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS:PickerProps = {
   onSelectItem: () => {},
-  style: {},
   darkMode: false,
+  selectedItem:{
+    key:"None",
+    label:"Empty Data",
+    value:"Empty Data"
+  }
+  
 };
-
-export const PickerList = forwardRef<PickerListRef, PickerListProps>(
+export const PickerComponent = forwardRef<PickerRef, PickerProps>(
   (props, ref) => {
     const propsModel = {
       ...DEFAULT_OPTIONS,
       ...props,
     };
 
-    return <PickerListComponent ref={ref} {...propsModel} />;
+    return <Picker ref={ref} {...propsModel} />;
   }
 );
-
-export const PickerSectionList = forwardRef<
-  PickerListRef,
-  PickerSectionListProps
->((props, ref) => {
-  const propsModel = {
-    ...DEFAULT_OPTIONS,
-    ...props,
-  };
-
-  return <PickerSectionListComponent ref={ref} {...propsModel} />;
-});

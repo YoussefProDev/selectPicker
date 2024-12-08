@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
-import { getStyles } from '../styles';
-import type { SelectModalProps, ItemType } from '../types';
+import { getPickerStyles } from '../styles';
+import type { PickerModalProps, Item } from '../types';
 import { FlashList } from '@shopify/flash-list';
 
-export const SelectModal: FC<SelectModalProps> = ({
+export const PickerModal: FC<PickerModalProps> = ({
   items,
   renderItem,
   onSelectItem,
@@ -24,14 +24,14 @@ export const SelectModal: FC<SelectModalProps> = ({
   modalStyle,
   showCloseButton = true,
   showModalTitle = true,
-  selectItem,
+selectedItem,
   close,
   modalAnimation,
 }) => {
   const [search, setSearch] = useState('');
-  const [itemsList, setItemsList] = useState<ItemType[]>(items);
+  const [itemsList, setItemsList] = useState<Item[]>(items);
 
-  const _flashListRef = useRef<FlashList<ItemType> | null>(null);
+  const _flashListRef = useRef<FlashList<Item> | null>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -40,22 +40,22 @@ export const SelectModal: FC<SelectModalProps> = ({
     };
   }, []);
 
-  const styles = getStyles(darkMode);
+  const styles = getPickerStyles(darkMode);
 
   const options: any = {
     shouldSort: true,
     threshold: 0.6,
     location: 0,
     distance: 100,
-    maxPatternLength: 32, // Aggiungi qui il valore
+    maxPatternLength: 32,
     minMatchCharLength: 1,
     keys: ['label', 'key', 'data'],
     id: 'key',
   };
 
-  const fuse = new Fuse<ItemType>(items, options);
+  const fuse = new Fuse<Item>(items, options);
 
-  const onSelect = (item: ItemType) => {
+  const onSelect = (item: Item) => {
     setSearch('');
     handleFilterChange('');
     StatusBar.setHidden(true);
@@ -67,7 +67,7 @@ export const SelectModal: FC<SelectModalProps> = ({
     item,
     index,
   }: {
-    item: ItemType;
+    item: Item;
     index: number;
   }) => {
     const isLastItem = index === itemsList.length - 1;
@@ -75,7 +75,7 @@ export const SelectModal: FC<SelectModalProps> = ({
       <TouchableOpacity
         style={[
           isLastItem && styles.lastItem,
-          item.key === selectItem?.key && styles.selectedItem,
+          item.key === selectedItem?.key && styles.selectedItem,
         ]}
         onPress={() => onSelect(item)}
       >
@@ -95,7 +95,7 @@ export const SelectModal: FC<SelectModalProps> = ({
   const handleFilterChange = (value: string) => {
     setSearch(value);
 
-    let listDataFilter: ItemType[] = [];
+    let listDataFilter: Item[] = [];
 
     if (value === '') {
       listDataFilter = items;
@@ -123,7 +123,7 @@ export const SelectModal: FC<SelectModalProps> = ({
         state={modalAnimation}
         style={[
           styles.container,
-          styles.modalBorders, // Modifica qui per usare modalView
+          styles.modalBorders,
           modalStyle?.container,
         ]}
       >
