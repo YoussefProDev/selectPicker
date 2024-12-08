@@ -24,7 +24,7 @@ export const PickerModal: FC<PickerModalProps> = ({
   modalStyle,
   showCloseButton = true,
   showModalTitle = true,
-selectedItem,
+  selectedItem,
   close,
   modalAnimation,
 }) => {
@@ -121,11 +121,7 @@ selectedItem,
       <MotiView
         transition={{ type: 'timing' }}
         state={modalAnimation}
-        style={[
-          styles.container,
-          styles.modalBorders,
-          modalStyle?.container,
-        ]}
+        style={[styles.container, styles.modalBorders, modalStyle?.container]}
       >
         <View style={styles.header}>
           {showModalTitle && (

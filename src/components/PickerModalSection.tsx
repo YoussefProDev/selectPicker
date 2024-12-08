@@ -30,13 +30,25 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   modalAnimation,
   renderSectionItem,
 }) => {
-  if (!sections[0]) return;
-
   const [search, setSearch] = useState('');
+  // Definisci la sezione predefinita con "Empty Data"
+  const defaultSection: Section<any> = {
+    name: 'Empty Data',
+    items: [
+      {
+        key: 'empty',
+        label: 'No items available',
+        value: 'No items available',
+      },
+    ],
+  };
+
   const [sectionSelect, setSectionSelect] = useState<Section>(
     sections.find((section) =>
       section.items.some((item) => item.key === selectedItem?.key)
-    ) ?? sections[0]
+    ) ??
+      sections[0] ??
+      defaultSection
   );
   const [itemsList, setItemsList] = useState<Item[]>(
     sectionSelect?.items ?? []

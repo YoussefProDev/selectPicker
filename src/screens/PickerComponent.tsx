@@ -14,9 +14,7 @@ import {
 } from 'react-native-gesture-handler';
 import { PickerTrigger, PickerModal, PickerModalSection } from '../components'; // Corretto
 import { getPickerStyles } from '../styles';
-import type {
-  PickerRef, PickerProps, Item
-} from '../types'; // Corretto
+import type { PickerRef, PickerProps, Item } from '../types'; // Corretto
 
 export const Picker = forwardRef<PickerRef, PickerProps>(
   (
@@ -39,14 +37,13 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
       showModalTitle = true,
       pageStyle = 'FullPage',
       renderSection,
-      selectedItem
+      selectedItem,
     },
     ref
   ) => {
-    
     // Stili dinamici
     const styles = useMemo(() => getPickerStyles(darkMode), [darkMode]);
-    
+
     // Dimensioni finestra
     const { height: windowHeight } = useWindowDimensions();
 
@@ -81,16 +78,15 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
       closePicker,
     ]);
     if (selectedItem === null) {
-      const defaultItem = { key: "None", label: "Empty Data", value: "Empty Data" };
-    
+      const defaultItem = {
+        key: 'None',
+        label: 'Empty Data',
+        value: 'Empty Data',
+      };
+
       // Check for the first item in `items` or `sections`
       selectedItem = items[0] || sections[0]?.items[0] || defaultItem;
     }
-    
-       
-    
-      
-
 
     // Gestione della selezione di un item
     const handleItemSelect = useCallback(
@@ -169,7 +165,6 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                   renderItem={renderItem}
                   modalAnimation={modalAnimation}
                   pageStyle={pageStyle}
-                  
                 />
               )}
             </View>

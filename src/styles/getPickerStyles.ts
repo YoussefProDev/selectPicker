@@ -2,11 +2,12 @@ import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { Colors } from './colors';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-export const getPickerStyles = (darkMode: boolean = false) => { // Corretto
+export const getPickerStyles = (darkMode: boolean = false) => {
+  // Corretto
   const ColorsSet = darkMode ? Colors.DarkModeColors : Colors.LightModeColors;
   const windowHeight = Dimensions.get('window').height;
   const marginTopByPlatform = Platform.OS === 'ios' ? 50 : getStatusBarHeight();
-  
+
   return StyleSheet.create({
     container: {
       paddingTop: marginTopByPlatform,
