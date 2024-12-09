@@ -1,6 +1,6 @@
 {
-  "name": "select-picker",
-  "version": "0.1.0",
+  "name": "rn-select-picker",
+  "version": "0.1.1",
   "description": "select-picker is a robust, feature-rich, and fully customizable option selection component for React Native. It offers built-in support for dark mode, search, item sections, complex object handling, and now custom section rendering. With its extensive customization options, select-picker can seamlessly integrate into any project.",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
@@ -19,6 +19,10 @@
   },
   "files": [
     "src",
+    "LICENSE",
+    "README.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
     "lib",
     "android",
     "ios",
@@ -47,7 +51,9 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "picker",
+    "select"
   ],
   "repository": {
     "type": "git",
