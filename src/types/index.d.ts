@@ -11,7 +11,7 @@ import {
   TriggerStyle,
 } from './types';
 
-declare module 'select-picker' {
+declare module 'rn-select-picker' {
   // Esportazione dei componenti e tipi dal modulo 'select-picker'
   export {
     PickerComponent,

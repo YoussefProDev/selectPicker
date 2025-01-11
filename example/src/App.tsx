@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { PickerComponent, type Item, type Section } from 'select-picker';
+import { PickerComponent, type Item, type Section } from 'rn-select-picker';
 
 const App = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -25,20 +25,13 @@ const App = () => {
   ];
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View
-        style={{
-          padding: 20,
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+    <GestureHandlerRootView style={styles.root}>
+      <View style={styles.container}>
         <Button
           title="Toggle Dark Mode"
           onPress={() => setDarkMode(!darkMode)}
         />
-        <Text style={{ marginVertical: 10 }}>
+        <Text style={styles.selectedItemText}>
           Selected Item: {selectedItem?.label || 'None'}
         </Text>
         <PickerComponent
@@ -50,12 +43,10 @@ const App = () => {
           searchPlaceholder="Search Items"
           renderTrigger={(item) => (
             <Text
-              style={{
-                backgroundColor: darkMode ? 'white' : 'black',
-                color: darkMode ? 'black' : 'white',
-                padding: 10,
-                borderRadius: 25,
-              }}
+              style={[
+                styles.trigger,
+                darkMode ? styles.triggerDark : styles.triggerLight,
+              ]}
             >
               {item ? item.label : 'Open Picker'}
             </Text>
@@ -65,5 +56,32 @@ const App = () => {
     </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  container: {
+    padding: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedItemText: {
+    marginVertical: 10,
+  },
+  trigger: {
+    padding: 10,
+    borderRadius: 25,
+  },
+  triggerDark: {
+    backgroundColor: 'white',
+    color: 'black',
+  },
+  triggerLight: {
+    backgroundColor: 'black',
+    color: 'white',
+  },
+});
 
 export default App;

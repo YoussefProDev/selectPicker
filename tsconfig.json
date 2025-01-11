@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "select-picker": ["./src/types/index.d.ts"]
+      "rn-select-picker": ["./src/types/index.d.ts"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
