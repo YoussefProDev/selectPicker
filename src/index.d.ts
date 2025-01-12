@@ -1,6 +1,6 @@
 // index.d.ts
 import { PickerComponent } from './picker';
-import type {
+import {
   Item,
   ModalStyle,
   PickerModalProps,
@@ -13,7 +13,7 @@ import type {
 } from './types';
 
 export default PickerComponent;
-export type {
+export {
   Item,
   ModalStyle,
   PickerModalProps,

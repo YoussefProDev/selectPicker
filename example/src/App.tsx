@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { PickerComponent, type Item, type Section } from 'rn-select-picker';
+import PickerComponent, { type Item, type Section } from 'rn-select-picker';
 
 const App = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
