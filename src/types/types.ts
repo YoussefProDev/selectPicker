@@ -10,7 +10,7 @@ export interface Item<T = string | number | object> {
 }
 
 // Tipo per la sezione del picker, che contiene un nome e una lista di item
-export interface Section<T = string | number | object> {
+export interface Section<T = any> {
   sectionName: string; // Nome della sezione
   items: Item<T>[]; // Lista di item nella sezione
 }
@@ -31,7 +31,7 @@ export type ModalStyle = {
 };
 
 // Props per il componente SelectTrigger
-export interface SelectTriggerProps<T = string | number | object> {
+export interface SelectTriggerProps<T = any> {
   open: () => void; // Funzione per aprire il picker
   selectedItem: Item<T> | null; // Item attualmente selezionato
   triggerStyle?: TriggerStyle; // Stile personalizzato per il trigger
@@ -41,7 +41,7 @@ export interface SelectTriggerProps<T = string | number | object> {
 }
 
 // Props per il componente PickerModal
-export interface PickerModalProps<T = string | number | object> {
+export interface PickerModalProps<T = any> {
   pageStyle: 'FullPage' | 'Modal'; // Tipo di visualizzazione
   items: Item<T>[]; // Lista degli item da mostrare
   selectedItem: Item<T> | null; // Item attualmente selezionato
@@ -59,7 +59,7 @@ export interface PickerModalProps<T = string | number | object> {
 }
 
 // Props per il componente PickerModalSection
-export interface PickerModalSectionProps<T = string | number | object> {
+export interface PickerModalSectionProps<T = any> {
   pageStyle: 'FullPage' | 'Modal'; // Tipo di visualizzazione
   sections: Section<T>[]; // Lista delle sezioni da mostrare
   selectedItem: Item<T> | null; // Item attualmente selezionato
@@ -85,7 +85,7 @@ export interface PickerRef {
 }
 
 // Props per il componente PickerList
-export interface PickerProps<T = string | number | object> {
+export interface PickerProps<T = any> {
   pageStyle?: 'FullPage' | 'Modal'; // Tipo di visualizzazione
   sections?: Section<T>[]; // Liste delle sezioni da selezionare
   items?: Item<T>[]; // Lista degli item da selezionare
