@@ -13,6 +13,7 @@ import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import { FlashList } from '@shopify/flash-list';
 import type { Item, Section, PickerModalSectionProps } from '../types';
+import { getNestedKeys, type NestedKeys } from '../utility';
 
 export const PickerModalSection: FC<PickerModalSectionProps> = ({
   sections,
@@ -33,7 +34,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   const [search, setSearch] = useState('');
   // Definisci la sezione predefinita con "Empty Data"
   const defaultSection: Section<any> = {
-    name: 'Empty Data',
+    sectionName: 'Empty Data',
     items: [
       {
         key: 'empty',
@@ -54,7 +55,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
     sectionSelect?.items ?? []
   );
   const [selectedSection, setSelectedSection] = useState<string>(
-    sectionSelect.name
+    sectionSelect.sectionName
   );
 
   const styles = useMemo(() => getPickerStyles(darkMode), [darkMode]);
@@ -69,29 +70,82 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
     };
   }, []);
 
-  const fuse = useMemo(
-    () =>
-      new Fuse<Item>(
-        sections.flatMap((section) => section.items),
-        {
-          shouldSort: true,
-          threshold: 0.6,
-          keys: ['key', 'label', 'data'],
-        }
-      ),
-    [sections]
-  );
+  const fuse = useMemo(() => {
+    const keys = getNestedKeys(
+      sections[0]?.items[0],
+      'items'
+    ) as NestedKeys<Item>[];
+
+    const options: any = {
+      shouldSort: true,
+      threshold: 0.6,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: ['sectionName', ...keys.map((k) => `${k}`)],
+      id: 'key',
+    };
+
+    return new Fuse<Section>(sections, options);
+  }, [sections]); // Le dipendenze sono solo 'sections' perché 'options' dipende da 'keys' che sono calcolati dentro
+  const itemFuse = useMemo(() => {
+    const keys = getNestedKeys(sections[0]?.items[0]) as NestedKeys<Item>[];
+    // console.log(...keys.map((k) => `${k}`));
+
+    const options: any = {
+      shouldSort: true,
+      threshold: 0.6,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [...keys.map((k) => `${k}`)],
+      id: 'key',
+    };
+
+    return new Fuse<Item>(
+      sections.flatMap((section) => section.items),
+      options
+    );
+  }, [sections]); // Le dipendenze sono solo 'sections' perché 'options' dipende da 'keys' che sono calcolati dentro
 
   const handleFilterChange = (value: string) => {
     setSearch(value);
-    const filteredItems =
-      value === ''
-        ? sectionSelect.items
-        : fuse.search(value).map((result) => result.item);
-    setItemsList(filteredItems);
+    // Se la ricerca è vuota, mostra tutto
+    if (value === '') {
+      setSelectedSection(sectionSelect.sectionName);
+      setItemsList(sectionSelect.items); // Reset degli items
+      return;
+    }
+
+    // Esegui la ricerca con Fuse
+    const searchResults = fuse.search(value);
+
+    // Controlla se la ricerca ha trovato una sezione o un item
+    const isSectionMatch = searchResults.some((result) =>
+      result.item.sectionName.toLowerCase().includes(value.toLowerCase())
+    );
+
+    if (isSectionMatch) {
+      // Se è una sezione che ha fatto match, mostra tutti gli item di quella sezione
+      const matchedSection = searchResults.find((result) =>
+        result.item.sectionName.toLowerCase().includes(value.toLowerCase())
+      );
+      if (matchedSection) {
+        setSelectedSection(matchedSection.item.sectionName);
+        setItemsList(matchedSection.item.items); // Mostra tutti gli item della sezione
+      }
+    } else {
+      const filteredItems = itemFuse.search(value).map((result) => result.item);
+
+      // Imposta lo stato con gli item da mostrare
+      setItemsList(filteredItems);
+    }
+
+    // Reset della lista per scorrere in cima
     flashListRef.current?.scrollToOffset({ offset: 0 });
   };
-
   const onSelect = (item: Item) => {
     onSelectItem?.(item);
     close();
@@ -100,24 +154,24 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   const handleSectionSelect = (item: Section) => {
     setSectionSelect(item);
     setItemsList(item.items);
-    setSelectedSection(item.name);
+    setSelectedSection(item.sectionName);
   };
 
   const renderSectionTemplate = ({ item }: { item: Section }) => (
     <TouchableOpacity
       style={[
         styles.section,
-        item.name === selectedSection && styles.selectedSectionItem,
+        item.sectionName === selectedSection && styles.selectedSectionItem,
       ]}
       onPress={() => handleSectionSelect(item)}
-      accessibilityLabel={`Section ${item.name}`}
+      accessibilityLabel={`Section ${item.sectionName}`}
       accessibilityHint="Tap to filter items by this section"
     >
       {renderSectionItem ? (
         renderSectionItem(item)
       ) : (
         <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
-          {item.name}
+          {item.sectionName}
         </Text>
       )}
     </TouchableOpacity>
@@ -203,7 +257,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
               ref={sectionListRef}
               renderItem={renderSectionTemplate}
               data={sections}
-              keyExtractor={(section) => section.name}
+              keyExtractor={(section) => section.sectionName}
               ListEmptyComponent={emptyItem}
               horizontal
             />

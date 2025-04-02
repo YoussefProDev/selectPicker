@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FC } from 'react';
+import { useEffect, useMemo, useRef, useState, type FC } from 'react';
 import {
   TouchableOpacity,
   StatusBar,
@@ -12,6 +12,7 @@ import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import type { PickerModalProps, Item } from '../types';
 import { FlashList } from '@shopify/flash-list';
+import { getNestedKeys, type NestedKeys } from '../utility';
 
 export const PickerModal: FC<PickerModalProps> = ({
   items,
@@ -42,18 +43,23 @@ export const PickerModal: FC<PickerModalProps> = ({
 
   const styles = getPickerStyles(darkMode);
 
-  const options: any = {
-    shouldSort: true,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: ['label', 'key', 'data'],
-    id: 'key',
-  };
+  const fuse = useMemo(() => {
+    const keys = getNestedKeys(items[0]) as NestedKeys<Item>[];
+    console.log(keys.map((k) => `${k}`));
 
-  const fuse = new Fuse<Item>(items, options);
+    const options: any = {
+      shouldSort: true,
+      threshold: 0.6,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [keys.map((k) => `${k}`)],
+      id: 'key',
+    };
+
+    return new Fuse<Item>(items, options);
+  }, [items]); // Le dipendenze sono solo 'sections' perché 'options' dipende da 'keys' che sono calcolati dentro
 
   const onSelect = (item: Item) => {
     setSearch('');
