@@ -45,7 +45,6 @@ export const PickerModal: FC<PickerModalProps> = ({
 
   const fuse = useMemo(() => {
     const keys = getNestedKeys(items[0]) as NestedKeys<Item>[];
-    console.log(keys.map((k) => `${k}`));
 
     const options: any = {
       shouldSort: true,
@@ -54,7 +53,7 @@ export const PickerModal: FC<PickerModalProps> = ({
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: [keys.map((k) => `${k}`)],
+      keys: [...keys.map((k) => `${k}`)],
       id: 'key',
     };
 
