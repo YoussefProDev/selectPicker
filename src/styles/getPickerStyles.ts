@@ -88,12 +88,32 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       color: ColorsSet.neutralGray, // Colore del testo quando la lista è vuota
     },
     modalView: {
-      backgroundColor: 'rgba(52, 52, 52, 0.0)', // Colore diverso per la modalità scura e chiara
-      height: windowHeight * 0.9,
+      backgroundColor: 'rgba(52, 52, 52, 0.0)', // Sfondo semitrasparente (puoi modificarlo per chiaro/scuro)
+
+      position: 'absolute',
+
+      height: windowHeight, // Altezza del modale (può essere una percentuale della finestra)
+      bottom: 0, // Posiziona il modale sul fondo
+      left: 0,
+      right: 0,
+      top: 'auto', // Non influenzare la parte superiore
+      // flex: 1,
+      // Non c'è bisogno di flex: 1 se stai impostando direttamente l'altezza
+      justifyContent: 'flex-end', // Posiziona il contenuto in fondo
+
+      // elevation: 5, // Aggiunge l'ombra su Android
     },
     fullPageView: {
       backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
       height: windowHeight,
+      position: 'absolute',
+      bottom: 0, // Posiziona il modale sul fondo
+      left: 0,
+      right: 0,
+      top: 'auto', // Non influenzare la parte superiore
+      // flex: 1,
+      // Non c'è bisogno di flex: 1 se stai impostando direttamente l'altezza
+      justifyContent: 'flex-end', // Posiziona il contenuto in fondo
     },
     fontDefault: {
       color: ColorsSet.neutralBlack, // Colore del testo di default
@@ -108,6 +128,7 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       borderWidth: 2,
       borderColor: ColorsSet.textSecondary, // Colore del bordo
       padding: 20, // Spazio interno
+      marginBottom: 0,
       margin: 10, // Spazio esterno
     },
   });

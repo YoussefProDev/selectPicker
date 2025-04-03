@@ -59,7 +59,9 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
     const openPicker = useCallback(() => {
       setModalVisible(true);
       modalAnimation.animateTo((current) => {
-        const targetTranslateY = pageStyle === 'Modal' ? windowHeight * 0.1 : 0;
+        const modalY = modalStyle?.modalHeight ? 0 : windowHeight * 0.1;
+
+        const targetTranslateY = pageStyle === 'Modal' ? modalY : 0;
         return { ...current, translateY: targetTranslateY };
       });
       onOpen?.();
@@ -127,6 +129,10 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
             <View
               style={[
                 pageStyle === 'Modal' ? styles.modalView : styles.fullPageView,
+
+                modalStyle?.modalHeight
+                  ? { height: modalStyle.modalHeight }
+                  : {},
               ]}
               accessible
               accessibilityLabel="Picker modal"
