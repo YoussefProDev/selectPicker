@@ -1,21 +1,32 @@
-import tsPlugin from '@typescript-eslint/eslint-plugin';
+import { defineConfig } from 'eslint/config';
 import tsParser from '@typescript-eslint/parser';
 
-export default [
+export default defineConfig([
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['*.ts', '*.tsx'],
     languageOptions: {
       parser: tsParser,
-      parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: process.cwd(),
-      },
     },
-    plugins: {
-      '@typescript-eslint': tsPlugin,
-    },
+    parser: '@typescript-eslint/parser',
+    plugins: ['@typescript-eslint'],
     rules: {
-      '@typescript-eslint/no-unused-vars': 'warn',
+      'react/react-in-jsx-scope': 'off',
+      'prettier/prettier': [
+        'error',
+        {
+          quoteProps: 'consistent',
+          singleQuote: true,
+          tabWidth: 2,
+          trailingComma: 'es5',
+          useTabs: false,
+        },
+      ],
     },
   },
-];
+  {
+    files: ['*.tsx'],
+    parserOptions: {
+      project: './tsconfig.json',
+    },
+  },
+]);
