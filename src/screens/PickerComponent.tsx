@@ -121,7 +121,7 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
           visible={isModalVisible}
           onRequestClose={closePicker}
           animationType="slide"
-          transparent
+          transparent={true}
         >
           <GestureDetector gesture={gesture}>
             <View
@@ -130,6 +130,11 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
               ]}
               accessible
               accessibilityLabel="Picker modal"
+              onTouchEnd={(event) => {
+                if (event.target === event.currentTarget) {
+                  closePicker(); // Chiude solo se il tocco è sulla parte vuota
+                }
+              }}
             >
               {isSectioned ? (
                 <PickerModalSection

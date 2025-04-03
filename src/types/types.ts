@@ -24,6 +24,7 @@ export type TriggerStyle = {
 // Tipo per lo stile del modale
 export type ModalStyle = {
   itemStyle?: StyleProp<TextStyle>; // Stile per ogni elemento nel modale
+  itemContainer?: StyleProp<ViewStyle>; // Stile per il contenitore Item
   container?: StyleProp<ViewStyle>; // Stile per il contenitore del modale
   searchStyle?: StyleProp<ViewStyle>; // Stile per il campo di ricerca
   titleStyle?: StyleProp<TextStyle>; // Stile per il titolo del modale

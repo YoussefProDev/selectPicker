@@ -30,6 +30,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   close,
   modalAnimation,
   renderSectionItem,
+  pageStyle,
 }) => {
   const [search, setSearch] = useState('');
   // Definisci la sezione predefinita con "Empty Data"
@@ -196,7 +197,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
       {renderItem ? (
         renderItem(item)
       ) : (
-        <View style={[styles.item, modalStyle?.container]}>
+        <View style={[styles.item, modalStyle?.itemContainer]}>
           <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
             {item.label}
           </Text>
@@ -216,7 +217,12 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
       <MotiView
         state={modalAnimation}
         transition={{ type: 'timing' }}
-        style={[styles.container, modalStyle?.container, styles.modalBorders]}
+        style={[
+          styles.container,
+
+          pageStyle === 'Modal' && styles.modalBorders,
+          modalStyle?.container,
+        ]}
       >
         <View style={styles.header}>
           {showModalTitle && (

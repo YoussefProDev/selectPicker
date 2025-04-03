@@ -28,6 +28,7 @@ export const PickerModal: FC<PickerModalProps> = ({
   selectedItem,
   close,
   modalAnimation,
+  pageStyle,
 }) => {
   const [search, setSearch] = useState('');
   const [itemsList, setItemsList] = useState<Item[]>(items);
@@ -87,7 +88,7 @@ export const PickerModal: FC<PickerModalProps> = ({
         {renderItem ? (
           renderItem(item)
         ) : (
-          <View style={[styles.item, modalStyle?.container]}>
+          <View style={[styles.item, modalStyle?.itemContainer]}>
             <Text style={[styles.itemLabel, modalStyle?.itemStyle]}>
               {item.label}
             </Text>
@@ -126,7 +127,11 @@ export const PickerModal: FC<PickerModalProps> = ({
       <MotiView
         transition={{ type: 'timing' }}
         state={modalAnimation}
-        style={[styles.container, styles.modalBorders, modalStyle?.container]}
+        style={[
+          styles.container,
+          pageStyle === 'Modal' && styles.modalBorders,
+          modalStyle?.container,
+        ]}
       >
         <View style={styles.header}>
           {showModalTitle && (

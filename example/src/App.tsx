@@ -120,6 +120,7 @@ const App = () => {
               {item ? item.label : 'Open Item Picker'}
             </Text>
           )}
+          pageStyle="Modal"
         />
         <PickerComponent
           sections={sections}

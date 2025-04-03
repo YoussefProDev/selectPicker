@@ -88,7 +88,7 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       color: ColorsSet.neutralGray, // Colore del testo quando la lista è vuota
     },
     modalView: {
-      backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
+      backgroundColor: 'rgba(52, 52, 52, 0.0)', // Colore diverso per la modalità scura e chiara
       height: windowHeight * 0.9,
     },
     fullPageView: {
@@ -104,6 +104,11 @@ export const getPickerStyles = (darkMode: boolean = false) => {
     modalBorders: {
       borderTopLeftRadius: 40,
       borderTopRightRadius: 40,
+      borderBottomWidth: 0,
+      borderWidth: 2,
+      borderColor: ColorsSet.textSecondary, // Colore del bordo
+      padding: 20, // Spazio interno
+      margin: 10, // Spazio esterno
     },
   });
 };
