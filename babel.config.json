@@ -1,0 +1,10 @@
+{
+  "presets": [
+    [
+      "react-native-builder-bob/babel-preset",
+
+      { "targets": { "node": "current" } }
+    ],
+    "@babel/preset-typescript"
+  ]
+}
