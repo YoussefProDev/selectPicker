@@ -14002,7 +14002,7 @@ __metadata:
     react: "*"
     react-native: "*"
     react-native-gesture-handler: ">=2.25.0"
-    react-native-reanimated: ">=3.16.1"
+    react-native-reanimated: ">=3.17.2"
   languageName: unknown
   linkType: soft
 
