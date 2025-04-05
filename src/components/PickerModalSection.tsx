@@ -11,7 +11,6 @@ import {
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
-import { FlashList } from '@shopify/flash-list';
 import type { Item, Section, PickerModalSectionProps } from '../types';
 import { getNestedKeys, type NestedKeys } from '../utility';
 
@@ -61,7 +60,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
 
   const styles = useMemo(() => getPickerStyles(darkMode), [darkMode]);
   const sectionListRef = useRef<FlatList<Section>>(null);
-  const flashListRef = useRef<FlashList<Item>>(null);
+  const flashListRef = useRef<FlatList<Item>>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -269,14 +268,14 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
             />
           </View>
 
-          <FlashList
+          <FlatList
             keyboardShouldPersistTaps="handled"
             ref={flashListRef}
             data={itemsList}
             renderItem={renderItemTemplate}
             keyExtractor={(item) => item.key}
             ListEmptyComponent={emptyItem}
-            estimatedItemSize={50}
+            // estimatedItemSize={50}
           />
         </KeyboardAvoidingView>
       </MotiView>

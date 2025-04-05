@@ -51,7 +51,7 @@ npm install react-native-gesture-handler@^2.21.0 react-native-reanimated@~3.16.1
 Or with Yarn:
 
 ```bash
-yarn add react-native-gesture-handler@^2.20.0 react-native-reanimated@~3.16.1
+yarn add react-native-gesture-handler@^2.25.0 react-native-reanimated@^3.17.2
 ```
 
 ### Configure `react-native-gesture-handler` and `react-native-reanimated`

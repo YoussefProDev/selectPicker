@@ -11,8 +11,8 @@ import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import type { PickerModalProps, Item } from '../types';
-import { FlashList } from '@shopify/flash-list';
 import { getNestedKeys, type NestedKeys } from '../utility';
+import { FlatList } from 'react-native-gesture-handler';
 
 export const PickerModal: FC<PickerModalProps> = ({
   items,
@@ -33,7 +33,7 @@ export const PickerModal: FC<PickerModalProps> = ({
   const [search, setSearch] = useState('');
   const [itemsList, setItemsList] = useState<Item[]>(items);
 
-  const _flashListRef = useRef<FlashList<Item> | null>(null);
+  const _flashListRef = useRef<FlatList<Item> | null>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -163,14 +163,14 @@ export const PickerModal: FC<PickerModalProps> = ({
           behavior="padding"
           style={[styles.listContainer, modalStyle?.listStyle]}
         >
-          <FlashList
+          <FlatList
             keyboardShouldPersistTaps="handled"
             ref={_flashListRef}
             data={itemsList}
             renderItem={renderItemTemplate}
             keyExtractor={(item) => item.key}
             ListEmptyComponent={emptyItem}
-            estimatedItemSize={50}
+            // estimatedItemSize={60}
           />
         </KeyboardAvoidingView>
       </MotiView>
