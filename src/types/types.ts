@@ -60,9 +60,11 @@ export interface PickerModalProps<T = any> {
   darkMode?: boolean; // Modalità scura
   modalStyle?: ModalStyle; // Stile personalizzato per il modale
   showCloseButton?: boolean; // Mostra il pulsante di chiusura
+  CloseButton?: React.ReactNode; // il pulsante di chiusura
   showModalTitle?: boolean; // Mostra il titolo del modale
   renderItem?: (item: Item<T> | null) => ReactNode; // Funzione opzionale per renderizzare un item
   modalAnimation: UseDynamicAnimationState<StyleProp<ViewStyle>>; // Stato dell'animazione dinamica del modale
+  showSearch?: boolean; // Mostra il campo di ricerca
 }
 
 // Props per il componente PickerModalSection
@@ -78,11 +80,13 @@ export interface PickerModalSectionProps<T = any> {
   darkMode?: boolean; // Modalità scura
   modalStyle?: ModalStyle; // Stile personalizzato per il modale
   showCloseButton?: boolean; // Mostra il pulsante di chiusura
+  CloseButton?: React.ReactNode; // il pulsante di chiusura
   showModalTitle?: boolean; // Mostra il titolo del modale
   renderItem?: (item: Item<T> | null) => ReactNode; // Funzione opzionale per renderizzare un item
   renderSectionItem?: (section: Section<T> | null) => ReactNode; // Funzione opzionale per renderizzare una sezione
   modalAnimation: UseDynamicAnimationState<StyleProp<ViewStyle>>; // Stato dell'animazione dinamica del modale
   selectedSection?: Section<T>; // Sezione attualmente selezionata
+  showSearch?: boolean; // Mostra il campo di ricerca
 }
 
 // Riferimento al componente PickerList per controlli programmatici
@@ -110,7 +114,9 @@ export interface PickerProps<T = any> {
   searchPlaceholder?: string; // Placeholder per il campo di ricerca
   textEmpty?: string; // Testo da mostrare quando la lista è vuota
   showCloseButton?: boolean; // Mostra il pulsante di chiusura
+  CloseButton?: React.ReactNode; // il pulsante di chiusura
   showModalTitle?: boolean; // Mostra il titolo del modale
   selectedItem: Item<T> | null; // Item selezionato
   ref?: React.Ref<PickerRef>; // Riferimento per i controlli programmatici
+  showSearch?: boolean; // Mostra il campo di ricerca
 }

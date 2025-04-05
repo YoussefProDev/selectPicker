@@ -30,6 +30,8 @@ export const PickerModal: FC<PickerModalProps> = ({
   close,
   modalAnimation,
   pageStyle,
+  showSearch,
+  CloseButton,
 }) => {
   const [search, setSearch] = useState('');
   const [itemsList, setItemsList] = useState<Item[]>(items);
@@ -147,21 +149,27 @@ export const PickerModal: FC<PickerModalProps> = ({
               onPress={() => close()}
               style={styles.searchClose}
             >
-              <Text style={styles.btnClose}>✖️</Text>
+              {CloseButton ? (
+                CloseButton
+              ) : (
+                <Text style={styles.btnClose}> ✖️</Text>
+              )}
             </TouchableOpacity>
           )}
         </View>
-        <View style={styles.search}>
-          <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
-            <TextInput
-              onChangeText={handleFilterChange}
-              value={search}
-              placeholder={searchPlaceholder}
-              placeholderTextColor={styles.textSearch.color}
-              style={[styles.textSearch, styles.textInput]}
-            />
+        {showSearch && (
+          <View style={styles.search}>
+            <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
+              <TextInput
+                onChangeText={handleFilterChange}
+                value={search}
+                placeholder={searchPlaceholder}
+                placeholderTextColor={styles.textSearch.color}
+                style={[styles.textSearch, styles.textInput]}
+              />
+            </View>
           </View>
-        </View>
+        )}
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={[styles.listContainer, modalStyle?.listStyle]}

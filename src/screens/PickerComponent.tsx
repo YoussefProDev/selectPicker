@@ -39,6 +39,8 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
       pageStyle = 'FullPage',
       renderSection,
       selectedItem,
+      showSearch = true,
+      CloseButton,
     },
     ref
   ) => {
@@ -168,6 +170,8 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                       pageStyle={pageStyle}
                       renderSectionItem={renderSection}
                       modalAnimation={modalAnimation}
+                      showSearch={showSearch}
+                      CloseButton={CloseButton}
                     />
                   ) : (
                     <PickerModal
@@ -185,6 +189,8 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                       renderItem={renderItem}
                       modalAnimation={modalAnimation}
                       pageStyle={pageStyle}
+                      showSearch={showSearch}
+                      CloseButton={CloseButton}
                     />
                   )}
                 </View>

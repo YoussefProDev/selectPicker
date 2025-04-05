@@ -29,6 +29,8 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   close,
   renderSectionItem,
   pageStyle,
+  showSearch,
+  CloseButton,
 }) => {
   const [search, setSearch] = useState('');
   // Definisci la sezione predefinita con "Empty Data"
@@ -233,22 +235,27 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
               style={styles.searchClose}
               accessibilityLabel="Close"
             >
-              <Text style={styles.btnClose}>✖️</Text>
+              {CloseButton ? (
+                CloseButton
+              ) : (
+                <Text style={styles.btnClose}> ✖️</Text>
+              )}
             </TouchableOpacity>
           )}
         </View>
-
-        <View style={styles.search}>
-          <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
-            <TextInput
-              onChangeText={handleFilterChange}
-              value={search}
-              placeholder={searchPlaceholder}
-              placeholderTextColor={styles.textSearch.color}
-              style={[styles.textSearch, styles.textInput]}
-            />
+        {showSearch && (
+          <View style={styles.search}>
+            <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
+              <TextInput
+                onChangeText={handleFilterChange}
+                value={search}
+                placeholder={searchPlaceholder}
+                placeholderTextColor={styles.textSearch.color}
+                style={[styles.textSearch, styles.textInput]}
+              />
+            </View>
           </View>
-        </View>
+        )}
 
         <KeyboardAvoidingView
           behavior="padding"
