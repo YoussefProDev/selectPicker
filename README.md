@@ -26,13 +26,13 @@
 To install the package, use either npm or yarn:
 
 ```bash
-npm install select-picker
+npm install rn-select-picker
 ```
 
 Or with Yarn:
 
 ```bash
-yarn add select-picker
+yarn add rn-select-picker
 ```
 
 ### Required Dependencies
@@ -45,7 +45,7 @@ This component depends on two external libraries for handling gestures and anima
 Install the required dependencies:
 
 ```bash
-npm install react-native-gesture-handler@^2.20.0 react-native-reanimated@~3.16.1
+npm install react-native-gesture-handler@^2.21.0 react-native-reanimated@~3.16.1
 ```
 
 Or with Yarn:
@@ -58,8 +58,8 @@ yarn add react-native-gesture-handler@^2.20.0 react-native-reanimated@~3.16.1
 
 Ensure that both libraries are configured correctly. Follow the official documentation for setup:
 
-- [react-native-gesture-handler installation](https://docs.swmansion.com/react-native-gesture-handler/docs/)
-- [react-native-reanimated installation](https://docs.swmansion.com/react-native-reanimated/docs/)
+- [react-native-gesture-handler installation](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation)
+- [react-native-reanimated installation](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started//)
 
 ---
 

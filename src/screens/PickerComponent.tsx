@@ -11,6 +11,7 @@ import {
   Directions,
   Gesture,
   GestureDetector,
+  GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import { PickerTrigger, PickerModal, PickerModalSection } from '../components'; // Corretto
 import { getPickerStyles } from '../styles';
@@ -125,61 +126,65 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
           animationType="slide"
           transparent={true}
         >
-          <GestureDetector gesture={gesture}>
-            <View
-              style={[
-                pageStyle === 'Modal' ? styles.modalView : styles.fullPageView,
+          <GestureHandlerRootView>
+            <GestureDetector gesture={gesture}>
+              <View
+                style={[
+                  pageStyle === 'Modal'
+                    ? styles.modalView
+                    : styles.fullPageView,
 
-                modalStyle?.modalHeight
-                  ? { height: modalStyle.modalHeight }
-                  : {},
-              ]}
-              accessible
-              accessibilityLabel="Picker modal"
-              onTouchEnd={(event) => {
-                if (event.target === event.currentTarget) {
-                  closePicker(); // Chiude solo se il tocco è sulla parte vuota
-                }
-              }}
-            >
-              {isSectioned ? (
-                <PickerModalSection
-                  selectedItem={selectedItem}
-                  sections={sections}
-                  onSelectItem={handleItemSelect}
-                  close={closePicker}
-                  title={title}
-                  searchPlaceholder={searchPlaceholder}
-                  textEmpty={textEmpty}
-                  darkMode={darkMode}
-                  modalStyle={modalStyle}
-                  showCloseButton={showCloseButton}
-                  showModalTitle={showModalTitle}
-                  renderItem={renderItem}
-                  pageStyle={pageStyle}
-                  renderSectionItem={renderSection}
-                  modalAnimation={modalAnimation}
-                />
-              ) : (
-                <PickerModal
-                  selectedItem={selectedItem}
-                  items={items}
-                  onSelectItem={handleItemSelect}
-                  close={closePicker}
-                  title={title}
-                  searchPlaceholder={searchPlaceholder}
-                  textEmpty={textEmpty}
-                  darkMode={darkMode}
-                  modalStyle={modalStyle}
-                  showCloseButton={showCloseButton}
-                  showModalTitle={showModalTitle}
-                  renderItem={renderItem}
-                  modalAnimation={modalAnimation}
-                  pageStyle={pageStyle}
-                />
-              )}
-            </View>
-          </GestureDetector>
+                  modalStyle?.modalHeight
+                    ? { height: modalStyle.modalHeight }
+                    : {},
+                ]}
+                accessible
+                accessibilityLabel="Picker modal"
+                onTouchEnd={(event) => {
+                  if (event.target === event.currentTarget) {
+                    closePicker(); // Chiude solo se il tocco è sulla parte vuota
+                  }
+                }}
+              >
+                {isSectioned ? (
+                  <PickerModalSection
+                    selectedItem={selectedItem}
+                    sections={sections}
+                    onSelectItem={handleItemSelect}
+                    close={closePicker}
+                    title={title}
+                    searchPlaceholder={searchPlaceholder}
+                    textEmpty={textEmpty}
+                    darkMode={darkMode}
+                    modalStyle={modalStyle}
+                    showCloseButton={showCloseButton}
+                    showModalTitle={showModalTitle}
+                    renderItem={renderItem}
+                    pageStyle={pageStyle}
+                    renderSectionItem={renderSection}
+                    modalAnimation={modalAnimation}
+                  />
+                ) : (
+                  <PickerModal
+                    selectedItem={selectedItem}
+                    items={items}
+                    onSelectItem={handleItemSelect}
+                    close={closePicker}
+                    title={title}
+                    searchPlaceholder={searchPlaceholder}
+                    textEmpty={textEmpty}
+                    darkMode={darkMode}
+                    modalStyle={modalStyle}
+                    showCloseButton={showCloseButton}
+                    showModalTitle={showModalTitle}
+                    renderItem={renderItem}
+                    modalAnimation={modalAnimation}
+                    pageStyle={pageStyle}
+                  />
+                )}
+              </View>
+            </GestureDetector>
+          </GestureHandlerRootView>
         </Modal>
       </View>
     );
