@@ -13162,7 +13162,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gesture-handler@npm:^2.25.0":
+"react-native-gesture-handler@npm:^2.20.0, react-native-gesture-handler@npm:^2.25.0":
   version: 2.25.0
   resolution: "react-native-gesture-handler@npm:2.25.0"
   dependencies:
@@ -13186,7 +13186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:^3.17.2":
+"react-native-reanimated@npm:^3.16.1":
   version: 3.17.2
   resolution: "react-native-reanimated@npm:3.17.2"
   dependencies:
@@ -13992,8 +13992,8 @@ __metadata:
     react: latest
     react-native: latest
     react-native-builder-bob: ^0.30.2
-    react-native-gesture-handler: ^2.25.0
-    react-native-reanimated: ^3.17.2
+    react-native-gesture-handler: ^2.20.0
+    react-native-reanimated: ^3.16.1
     react-native-status-bar-height: ^2.6.0
     release-it: ^15.0.0
     ts-jest: ^29.3.1
@@ -14001,8 +14001,8 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
-    react-native-gesture-handler: ">=2.25.0"
-    react-native-reanimated: ">=3.17.2"
+    react-native-gesture-handler: ">=2.20.0"
+    react-native-reanimated: ">=3.16.1"
   languageName: unknown
   linkType: soft
 
