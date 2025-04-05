@@ -27,7 +27,6 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   showModalTitle = true,
   selectedItem,
   close,
-  modalAnimation,
   renderSectionItem,
   pageStyle,
 }) => {
@@ -214,7 +213,6 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   return (
     <AnimatePresence>
       <MotiView
-        state={modalAnimation}
         transition={{ type: 'timing' }}
         style={[
           styles.container,

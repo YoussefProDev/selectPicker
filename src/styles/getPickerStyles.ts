@@ -13,8 +13,8 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       paddingTop: marginTopByPlatform,
       flex: 1,
       backgroundColor: ColorsSet.background, // Sfondo principale
-      paddingBottom: 30,
       paddingHorizontal: 15,
+      padding: 20, // Spazio interno
     },
 
     header: {
@@ -67,7 +67,7 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       color: ColorsSet.textPrimary, // Colore del testo dell'elemento
     },
     lastItem: {
-      marginBottom: 20,
+      marginBottom: 30,
     },
     selectedSectionContainer: {
       marginBottom: 10,
@@ -87,33 +87,24 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       fontSize: 16,
       color: ColorsSet.neutralGray, // Colore del testo quando la lista è vuota
     },
+    modalContainer: {
+      flex: 1, // Rende il contenitore principale grande quanto l'intera finestra
+      flexDirection: 'column', // Imposta la direzione degli oggetti in colonna
+      justifyContent: 'flex-end',
+      backgroundColor: 'rgba(52, 52, 52, 0.0)',
+    },
     modalView: {
-      backgroundColor: 'rgba(52, 52, 52, 0.0)', // Sfondo semitrasparente (puoi modificarlo per chiaro/scuro)
+      // Sfondo semitrasparente (puoi modificarlo per chiaro/scuro)
+      paddingTop: marginTopByPlatform,
 
-      position: 'absolute',
-
-      height: windowHeight, // Altezza del modale (può essere una percentuale della finestra)
-      bottom: 0, // Posiziona il modale sul fondo
-      left: 0,
-      right: 0,
-      top: 'auto', // Non influenzare la parte superiore
-      // flex: 1,
-      // Non c'è bisogno di flex: 1 se stai impostando direttamente l'altezza
-      justifyContent: 'flex-end', // Posiziona il contenuto in fondo
-
-      // elevation: 5, // Aggiunge l'ombra su Android
+      paddingBottom: 0,
+      marginBottom: 0,
+      margin: 10, // Spazio esterno
+      height: windowHeight * 0.9, // Altezza del modale (può essere una percentuale della finestra)
     },
     fullPageView: {
       backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
       height: windowHeight,
-      position: 'absolute',
-      bottom: 0, // Posiziona il modale sul fondo
-      left: 0,
-      right: 0,
-      top: 'auto', // Non influenzare la parte superiore
-      // flex: 1,
-      // Non c'è bisogno di flex: 1 se stai impostando direttamente l'altezza
-      justifyContent: 'flex-end', // Posiziona il contenuto in fondo
     },
     fontDefault: {
       color: ColorsSet.neutralBlack, // Colore del testo di default
@@ -127,9 +118,6 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       borderBottomWidth: 0,
       borderWidth: 2,
       borderColor: ColorsSet.textSecondary, // Colore del bordo
-      padding: 20, // Spazio interno
-      marginBottom: 0,
-      margin: 10, // Spazio esterno
     },
   });
 };

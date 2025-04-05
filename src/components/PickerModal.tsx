@@ -6,6 +6,7 @@ import {
   Text,
   KeyboardAvoidingView,
   View,
+  Platform,
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
@@ -130,8 +131,10 @@ export const PickerModal: FC<PickerModalProps> = ({
         style={[
           styles.container,
           pageStyle === 'Modal' && styles.modalBorders,
+          ,
           modalStyle?.container,
         ]}
+        pointerEvents="box-none"
       >
         <View style={styles.header}>
           {showModalTitle && (
@@ -160,7 +163,7 @@ export const PickerModal: FC<PickerModalProps> = ({
           </View>
         </View>
         <KeyboardAvoidingView
-          behavior="padding"
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={[styles.listContainer, modalStyle?.listStyle]}
         >
           <FlatList
@@ -170,7 +173,8 @@ export const PickerModal: FC<PickerModalProps> = ({
             renderItem={renderItemTemplate}
             keyExtractor={(item) => item.key}
             ListEmptyComponent={emptyItem}
-            // estimatedItemSize={60}
+
+            // contentContainerStyle={{ paddingBottom: 60 }}
           />
         </KeyboardAvoidingView>
       </MotiView>

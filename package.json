@@ -74,6 +74,8 @@
     "fuse.js": "^7.0.0",
     "jest": "^29.7.0",
     "moti": "latest",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-modal": "^14.0.0-rc.1",
     "react-native-status-bar-height": "^2.6.0"
   },
   "devDependencies": {

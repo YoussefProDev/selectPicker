@@ -60,9 +60,10 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
     const openPicker = useCallback(() => {
       setModalVisible(true);
       modalAnimation.animateTo((current) => {
-        const modalY = modalStyle?.modalHeight ? 0 : windowHeight * 0.1;
+        // const modalY = modalStyle?.modalHeight ? 0 : windowHeight * 0.1;
 
-        const targetTranslateY = pageStyle === 'Modal' ? modalY : 0;
+        // const targetTranslateY = pageStyle === 'Modal' ? 0 : 0;
+        const targetTranslateY = 0;
         return { ...current, translateY: targetTranslateY };
       });
       onOpen?.();
@@ -125,19 +126,12 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
           onRequestClose={closePicker}
           animationType="slide"
           transparent={true}
+          statusBarTranslucent={true}
         >
           <GestureHandlerRootView>
             <GestureDetector gesture={gesture}>
               <View
-                style={[
-                  pageStyle === 'Modal'
-                    ? styles.modalView
-                    : styles.fullPageView,
-
-                  modalStyle?.modalHeight
-                    ? { height: modalStyle.modalHeight }
-                    : {},
-                ]}
+                style={styles.modalContainer}
                 accessible
                 accessibilityLabel="Picker modal"
                 onTouchEnd={(event) => {
@@ -146,42 +140,54 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                   }
                 }}
               >
-                {isSectioned ? (
-                  <PickerModalSection
-                    selectedItem={selectedItem}
-                    sections={sections}
-                    onSelectItem={handleItemSelect}
-                    close={closePicker}
-                    title={title}
-                    searchPlaceholder={searchPlaceholder}
-                    textEmpty={textEmpty}
-                    darkMode={darkMode}
-                    modalStyle={modalStyle}
-                    showCloseButton={showCloseButton}
-                    showModalTitle={showModalTitle}
-                    renderItem={renderItem}
-                    pageStyle={pageStyle}
-                    renderSectionItem={renderSection}
-                    modalAnimation={modalAnimation}
-                  />
-                ) : (
-                  <PickerModal
-                    selectedItem={selectedItem}
-                    items={items}
-                    onSelectItem={handleItemSelect}
-                    close={closePicker}
-                    title={title}
-                    searchPlaceholder={searchPlaceholder}
-                    textEmpty={textEmpty}
-                    darkMode={darkMode}
-                    modalStyle={modalStyle}
-                    showCloseButton={showCloseButton}
-                    showModalTitle={showModalTitle}
-                    renderItem={renderItem}
-                    modalAnimation={modalAnimation}
-                    pageStyle={pageStyle}
-                  />
-                )}
+                <View
+                  style={[
+                    pageStyle === 'Modal'
+                      ? styles.modalView
+                      : styles.fullPageView,
+
+                    modalStyle?.modalHeight
+                      ? { height: modalStyle.modalHeight }
+                      : {},
+                  ]}
+                >
+                  {isSectioned ? (
+                    <PickerModalSection
+                      selectedItem={selectedItem}
+                      sections={sections}
+                      onSelectItem={handleItemSelect}
+                      close={closePicker}
+                      title={title}
+                      searchPlaceholder={searchPlaceholder}
+                      textEmpty={textEmpty}
+                      darkMode={darkMode}
+                      modalStyle={modalStyle}
+                      showCloseButton={showCloseButton}
+                      showModalTitle={showModalTitle}
+                      renderItem={renderItem}
+                      pageStyle={pageStyle}
+                      renderSectionItem={renderSection}
+                      modalAnimation={modalAnimation}
+                    />
+                  ) : (
+                    <PickerModal
+                      selectedItem={selectedItem}
+                      items={items}
+                      onSelectItem={handleItemSelect}
+                      close={closePicker}
+                      title={title}
+                      searchPlaceholder={searchPlaceholder}
+                      textEmpty={textEmpty}
+                      darkMode={darkMode}
+                      modalStyle={modalStyle}
+                      showCloseButton={showCloseButton}
+                      showModalTitle={showModalTitle}
+                      renderItem={renderItem}
+                      modalAnimation={modalAnimation}
+                      pageStyle={pageStyle}
+                    />
+                  )}
+                </View>
               </View>
             </GestureDetector>
           </GestureHandlerRootView>
