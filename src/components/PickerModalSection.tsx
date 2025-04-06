@@ -231,14 +231,17 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
           )}
           {showCloseButton && (
             <TouchableOpacity
-              onPress={close}
-              style={styles.searchClose}
-              accessibilityLabel="Close"
+              onPress={() => close()}
+              style={
+                CloseButton
+                  ? {}
+                  : [styles.searchClose, modalStyle?.closebuttonStyle]
+              }
             >
               {CloseButton ? (
                 CloseButton
               ) : (
-                <Text style={styles.btnClose}> ✖️</Text>
+                <Text style={styles.btnClose}>✖️</Text>
               )}
             </TouchableOpacity>
           )}

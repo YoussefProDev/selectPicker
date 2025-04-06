@@ -32,6 +32,7 @@ export type ModalStyle = {
   itemContainer?: StyleProp<ViewStyle>; // Stile per il contenitore Item
   container?: StyleProp<ViewStyle>; // Stile per il contenitore del modale
   searchStyle?: StyleProp<ViewStyle>; // Stile per il campo di ricerca
+  closebuttonStyle?: StyleProp<ViewStyle>; // Stile per il campo di ricerca
   titleStyle?: StyleProp<TextStyle>; // Stile per il titolo del modale
   listStyle?: StyleProp<ViewStyle>; // Stile per la lista all'interno del modale
   modalHeight?: DimensionValue;
