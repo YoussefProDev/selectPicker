@@ -79,11 +79,13 @@ export const PickerModal: FC<PickerModalProps> = ({
     item: Item;
     index: number;
   }) => {
-    const isLastItem = index === itemsList.length - 1;
     return (
       <TouchableOpacity
         style={[
-          isLastItem && styles.lastItem,
+          index === itemsList.length - 1 && [
+            styles.lastItem,
+            modalStyle?.lastitemStyle,
+          ],
           item.key === selectedItem?.key && styles.selectedItem,
         ]}
         onPress={() => onSelect(item)}

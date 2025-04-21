@@ -67,7 +67,7 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       color: ColorsSet.textPrimary, // Colore del testo dell'elemento
     },
     lastItem: {
-      marginBottom: 30,
+      marginBottom: 70,
     },
     selectedSectionContainer: {
       marginBottom: 10,

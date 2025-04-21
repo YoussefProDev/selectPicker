@@ -36,6 +36,7 @@ export type ModalStyle = {
   titleStyle?: StyleProp<TextStyle>; // Stile per il titolo del modale
   listStyle?: StyleProp<ViewStyle>; // Stile per la lista all'interno del modale
   modalHeight?: DimensionValue;
+  lastitemStyle?: StyleProp<ViewStyle>; // Stile per l'ultimo item
 };
 
 // Props per il componente SelectTrigger

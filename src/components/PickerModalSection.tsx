@@ -187,7 +187,10 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   }) => (
     <TouchableOpacity
       style={[
-        index === itemsList.length - 1 && styles.lastItem,
+        index === itemsList.length - 1 && [
+          styles.lastItem,
+          modalStyle?.lastitemStyle,
+        ],
         item.key === selectedItem?.key && styles.selectedItem,
       ]}
       onPress={() => onSelect(item)}
