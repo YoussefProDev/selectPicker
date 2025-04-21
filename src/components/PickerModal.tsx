@@ -4,16 +4,15 @@ import {
   StatusBar,
   TextInput,
   Text,
-  KeyboardAvoidingView,
   View,
-  Platform,
 } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import type { PickerModalProps, Item } from '../types';
 import { getNestedKeys, type NestedKeys } from '../utility';
-import { FlatList } from 'react-native-gesture-handler';
+
+import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 
 export const PickerModal: FC<PickerModalProps> = ({
   items,
@@ -36,7 +35,7 @@ export const PickerModal: FC<PickerModalProps> = ({
   const [search, setSearch] = useState('');
   const [itemsList, setItemsList] = useState<Item[]>(items);
 
-  const _flashListRef = useRef<FlatList<Item> | null>(null);
+  const _flashListRef = useRef<KeyboardAwareFlatList | null>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -113,7 +112,7 @@ export const PickerModal: FC<PickerModalProps> = ({
     } else {
       const filteredItems = fuse.search(value);
       if (_flashListRef.current) {
-        _flashListRef.current.scrollToOffset({ offset: 0 });
+        _flashListRef.current.scrollToPosition(0, 0, true);
       }
       filteredItems.map((result) => listDataFilter.push(result.item));
     }
@@ -176,21 +175,16 @@ export const PickerModal: FC<PickerModalProps> = ({
             </View>
           </View>
         )}
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={[styles.listContainer, modalStyle?.listStyle]}
-        >
-          <FlatList
-            keyboardShouldPersistTaps="handled"
-            ref={_flashListRef}
-            data={itemsList}
-            renderItem={renderItemTemplate}
-            keyExtractor={(item) => item.key}
-            ListEmptyComponent={emptyItem}
 
-            // contentContainerStyle={{ paddingBottom: 60 }}
-          />
-        </KeyboardAvoidingView>
+        <KeyboardAwareFlatList
+          keyboardShouldPersistTaps="handled"
+          ref={_flashListRef}
+          data={itemsList}
+          renderItem={renderItemTemplate}
+          keyExtractor={(item) => item.key}
+          ListEmptyComponent={emptyItem}
+          style={[styles.listContainer, modalStyle?.listStyle]}
+        />
       </MotiView>
     </AnimatePresence>
   );

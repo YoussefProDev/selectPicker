@@ -4,7 +4,6 @@ import {
   StatusBar,
   TextInput,
   Text,
-  KeyboardAvoidingView,
   View,
   FlatList,
 } from 'react-native';
@@ -13,6 +12,7 @@ import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import type { Item, Section, PickerModalSectionProps } from '../types';
 import { getNestedKeys, type NestedKeys } from '../utility';
+import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 
 export const PickerModalSection: FC<PickerModalSectionProps> = ({
   sections,
@@ -61,7 +61,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
 
   const styles = useMemo(() => getPickerStyles(darkMode), [darkMode]);
   const sectionListRef = useRef<FlatList<Section>>(null);
-  const flashListRef = useRef<FlatList<Item>>(null);
+  const flashListRef = useRef<KeyboardAwareFlatList>(null);
 
   useEffect(() => {
     StatusBar.setHidden(true);
@@ -145,7 +145,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
     }
 
     // Reset della lista per scorrere in cima
-    flashListRef.current?.scrollToOffset({ offset: 0 });
+    flashListRef.current?.scrollToPosition(0, 0, true);
   };
   const onSelect = (item: Item) => {
     onSelectItem?.(item);
@@ -263,32 +263,32 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
           </View>
         )}
 
-        <KeyboardAvoidingView
-          behavior="padding"
+        {/* <KeyboardAwareScrollView
+          // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={[styles.listContainer, modalStyle?.listStyle]}
-        >
-          <View style={styles.selectedSectionContainer}>
-            <FlatList
-              keyboardShouldPersistTaps="handled"
-              ref={sectionListRef}
-              renderItem={renderSectionTemplate}
-              data={sections}
-              keyExtractor={(section) => section.sectionName}
-              ListEmptyComponent={emptyItem}
-              horizontal
-            />
-          </View>
-
+        > */}
+        <View style={styles.selectedSectionContainer}>
           <FlatList
             keyboardShouldPersistTaps="handled"
-            ref={flashListRef}
-            data={itemsList}
-            renderItem={renderItemTemplate}
-            keyExtractor={(item) => item.key}
+            ref={sectionListRef}
+            renderItem={renderSectionTemplate}
+            data={sections}
+            keyExtractor={(section) => section.sectionName}
             ListEmptyComponent={emptyItem}
-            // estimatedItemSize={50}
+            horizontal
           />
-        </KeyboardAvoidingView>
+        </View>
+
+        <KeyboardAwareFlatList
+          keyboardShouldPersistTaps="handled"
+          ref={flashListRef}
+          data={itemsList}
+          renderItem={renderItemTemplate}
+          keyExtractor={(item) => item.key}
+          ListEmptyComponent={emptyItem}
+          // estimatedItemSize={50}
+        />
+        {/* </KeyboardAwareScrollView> */}
       </MotiView>
     </AnimatePresence>
   );
