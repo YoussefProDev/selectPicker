@@ -6,12 +6,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import { AnimatePresence, MotiView } from 'moti';
+
 import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import type { PickerModalProps, Item } from '../types';
 import { getNestedKeys, type NestedKeys } from '../utility';
-
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 
 export const PickerModal: FC<PickerModalProps> = ({
@@ -27,8 +26,7 @@ export const PickerModal: FC<PickerModalProps> = ({
   showModalTitle = true,
   selectedItem,
   close,
-  modalAnimation,
-  pageStyle,
+
   showSearch,
   CloseButton,
 }) => {
@@ -78,13 +76,11 @@ export const PickerModal: FC<PickerModalProps> = ({
     item: Item;
     index: number;
   }) => {
+    const isLastItem = index === itemsList.length - 1;
     return (
       <TouchableOpacity
         style={[
-          index === itemsList.length - 1 && [
-            styles.lastItem,
-            modalStyle?.lastitemStyle,
-          ],
+          isLastItem && [styles.lastItem, modalStyle?.lastitemStyle],
           item.key === selectedItem?.key && styles.selectedItem,
         ]}
         onPress={() => onSelect(item)}
@@ -127,65 +123,55 @@ export const PickerModal: FC<PickerModalProps> = ({
   );
 
   return (
-    <AnimatePresence>
-      <MotiView
-        transition={{ type: 'timing' }}
-        state={modalAnimation}
-        style={[
-          styles.container,
-          pageStyle === 'Modal' && styles.modalBorders,
-          ,
-          modalStyle?.container,
-        ]}
-        pointerEvents="box-none"
-      >
-        <View style={styles.header}>
-          {showModalTitle && (
-            <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
-              {title}
-            </Text>
-          )}
-          {showCloseButton && (
-            <TouchableOpacity
-              onPress={() => close()}
-              style={
-                CloseButton
-                  ? {}
-                  : [styles.searchClose, modalStyle?.closebuttonStyle]
-              }
-            >
-              {CloseButton ? (
-                CloseButton
-              ) : (
-                <Text style={styles.btnClose}>✖️</Text>
-              )}
-            </TouchableOpacity>
-          )}
-        </View>
-        {showSearch && (
-          <View style={styles.search}>
-            <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
-              <TextInput
-                onChangeText={handleFilterChange}
-                value={search}
-                placeholder={searchPlaceholder}
-                placeholderTextColor={styles.textSearch.color}
-                style={[styles.textSearch, styles.textInput]}
-              />
-            </View>
-          </View>
+    <>
+      <View style={styles.header}>
+        {showModalTitle && (
+          <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
+            {title}
+          </Text>
         )}
+        {showCloseButton && (
+          <TouchableOpacity
+            onPress={() => close()}
+            style={
+              CloseButton
+                ? {}
+                : [styles.searchClose, modalStyle?.closebuttonStyle]
+            }
+          >
+            {CloseButton ? (
+              CloseButton
+            ) : (
+              <Text style={styles.btnClose}>✖️</Text>
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
+      {showSearch && (
+        <View style={styles.search}>
+          <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
+            <TextInput
+              onChangeText={handleFilterChange}
+              value={search}
+              placeholder={searchPlaceholder}
+              placeholderTextColor={styles.textSearch.color}
+              style={[styles.textSearch, styles.textInput]}
+            />
+          </View>
+        </View>
+      )}
 
-        <KeyboardAwareFlatList
-          keyboardShouldPersistTaps="handled"
-          ref={_flashListRef}
-          data={itemsList}
-          renderItem={renderItemTemplate}
-          keyExtractor={(item) => item.key}
-          ListEmptyComponent={emptyItem}
-          style={[styles.listContainer, modalStyle?.listStyle]}
-        />
-      </MotiView>
-    </AnimatePresence>
+      <KeyboardAwareFlatList
+        keyboardShouldPersistTaps="handled"
+        ref={_flashListRef}
+        showsVerticalScrollIndicator={false}
+        data={itemsList}
+        renderItem={renderItemTemplate}
+        keyExtractor={(item) => item.key}
+        ListEmptyComponent={emptyItem}
+        style={[styles.listContainer, modalStyle?.listStyle]}
+        nestedScrollEnabled={true}
+      />
+    </>
   );
 };

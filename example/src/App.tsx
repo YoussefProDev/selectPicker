@@ -527,7 +527,7 @@ const App = () => {
               {item ? item.label : 'Open Item Picker'}
             </Text>
           )}
-          modalStyle={{ modalHeight: height }}
+          modalStyle={{ modalHeight: height * 0.8 }}
           pageStyle="Modal"
         />
         <PickerComponent
@@ -547,7 +547,7 @@ const App = () => {
               {item ? item.label : 'Open Sections Picker'}
             </Text>
           )}
-          pageStyle="Modal"
+          pageStyle="FullPage"
         />
       </View>
     </GestureHandlerRootView>

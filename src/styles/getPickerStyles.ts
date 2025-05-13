@@ -10,11 +10,13 @@ export const getPickerStyles = (darkMode: boolean = false) => {
 
   return StyleSheet.create({
     container: {
-      paddingTop: marginTopByPlatform,
       flex: 1,
-      backgroundColor: ColorsSet.background, // Sfondo principale
-      paddingHorizontal: 15,
-      padding: 20, // Spazio interno
+      flexDirection: 'column', // Imposta la direzione degli oggetti in colonna
+      justifyContent: 'flex-end',
+
+      // backgroundColor: ColorsSet.background, // Sfondo principale
+      // paddingHorizontal: 15,
+      // padding: 0, // Spazio interno
     },
 
     header: {
@@ -95,16 +97,20 @@ export const getPickerStyles = (darkMode: boolean = false) => {
     },
     modalView: {
       // Sfondo semitrasparente (puoi modificarlo per chiaro/scuro)
-      paddingTop: marginTopByPlatform,
-
+      marginTop: marginTopByPlatform,
+      padding: 20, // Spazio interno
       paddingBottom: 0,
       marginBottom: 0,
+      backgroundColor: ColorsSet.background,
       margin: 10, // Spazio esterno
       height: windowHeight * 0.9, // Altezza del modale (può essere una percentuale della finestra)
     },
     fullPageView: {
+      paddingTop: marginTopByPlatform,
       backgroundColor: ColorsSet.backgroundModal, // Colore diverso per la modalità scura e chiara
       height: windowHeight,
+      paddingHorizontal: 15,
+      flex: 1,
     },
     fontDefault: {
       color: ColorsSet.neutralBlack, // Colore del testo di default

@@ -7,7 +7,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import { AnimatePresence, MotiView } from 'moti';
+
 import Fuse from 'fuse.js';
 import { getPickerStyles } from '../styles';
 import type { Item, Section, PickerModalSectionProps } from '../types';
@@ -28,7 +28,7 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   selectedItem,
   close,
   renderSectionItem,
-  pageStyle,
+
   showSearch,
   CloseButton,
 }) => {
@@ -216,80 +216,69 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   );
 
   return (
-    <AnimatePresence>
-      <MotiView
-        transition={{ type: 'timing' }}
-        style={[
-          styles.container,
-
-          pageStyle === 'Modal' && styles.modalBorders,
-          modalStyle?.container,
-        ]}
-      >
-        <View style={styles.header}>
-          {showModalTitle && (
-            <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
-              {title}
-            </Text>
-          )}
-          {showCloseButton && (
-            <TouchableOpacity
-              onPress={() => close()}
-              style={
-                CloseButton
-                  ? {}
-                  : [styles.searchClose, modalStyle?.closebuttonStyle]
-              }
-            >
-              {CloseButton ? (
-                CloseButton
-              ) : (
-                <Text style={styles.btnClose}>✖️</Text>
-              )}
-            </TouchableOpacity>
-          )}
-        </View>
-        {showSearch && (
-          <View style={styles.search}>
-            <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
-              <TextInput
-                onChangeText={handleFilterChange}
-                value={search}
-                placeholder={searchPlaceholder}
-                placeholderTextColor={styles.textSearch.color}
-                style={[styles.textSearch, styles.textInput]}
-              />
-            </View>
-          </View>
+    <>
+      <View style={styles.header}>
+        {showModalTitle && (
+          <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
+            {title}
+          </Text>
         )}
+        {showCloseButton && (
+          <TouchableOpacity
+            onPress={() => close()}
+            style={
+              CloseButton
+                ? {}
+                : [styles.searchClose, modalStyle?.closebuttonStyle]
+            }
+          >
+            {CloseButton ? (
+              CloseButton
+            ) : (
+              <Text style={styles.btnClose}>✖️</Text>
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
+      {showSearch && (
+        <View style={styles.search}>
+          <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
+            <TextInput
+              onChangeText={handleFilterChange}
+              value={search}
+              placeholder={searchPlaceholder}
+              placeholderTextColor={styles.textSearch.color}
+              style={[styles.textSearch, styles.textInput]}
+            />
+          </View>
+        </View>
+      )}
 
-        {/* <KeyboardAwareScrollView
+      {/* <KeyboardAwareScrollView
           // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={[styles.listContainer, modalStyle?.listStyle]}
-        > */}
-        <View style={styles.selectedSectionContainer}>
-          <FlatList
-            keyboardShouldPersistTaps="handled"
-            ref={sectionListRef}
-            renderItem={renderSectionTemplate}
-            data={sections}
-            keyExtractor={(section) => section.sectionName}
-            ListEmptyComponent={emptyItem}
-            horizontal
-          />
-        </View>
-
-        <KeyboardAwareFlatList
+          > */}
+      <View style={styles.selectedSectionContainer}>
+        <FlatList
           keyboardShouldPersistTaps="handled"
-          ref={flashListRef}
-          data={itemsList}
-          renderItem={renderItemTemplate}
-          keyExtractor={(item) => item.key}
+          ref={sectionListRef}
+          renderItem={renderSectionTemplate}
+          data={sections}
+          keyExtractor={(section) => section.sectionName}
           ListEmptyComponent={emptyItem}
-          // estimatedItemSize={50}
+          horizontal
         />
-        {/* </KeyboardAwareScrollView> */}
-      </MotiView>
-    </AnimatePresence>
+      </View>
+
+      <KeyboardAwareFlatList
+        keyboardShouldPersistTaps="handled"
+        ref={flashListRef}
+        data={itemsList}
+        renderItem={renderItemTemplate}
+        keyExtractor={(item) => item.key}
+        ListEmptyComponent={emptyItem}
+        // estimatedItemSize={50}
+      />
+    </>
   );
 };
