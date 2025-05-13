@@ -26,7 +26,7 @@ export const PickerModal: FC<PickerModalProps> = ({
   showModalTitle = true,
   selectedItem,
   close,
-
+  // pageStyle,
   showSearch,
   CloseButton,
 }) => {

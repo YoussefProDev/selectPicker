@@ -1,11 +1,6 @@
 import type { UseDynamicAnimationState } from 'moti';
 import type { ReactNode } from 'react';
-import type {
-  DimensionValue,
-  StyleProp,
-  TextStyle,
-  ViewStyle,
-} from 'react-native';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 // Tipo per i dati degli item, con un supporto flessibile per chiavi e valori
 export interface Item<T = string | number | object> {
@@ -35,7 +30,7 @@ export type ModalStyle = {
   closebuttonStyle?: StyleProp<ViewStyle>; // Stile per il campo di ricerca
   titleStyle?: StyleProp<TextStyle>; // Stile per il titolo del modale
   listStyle?: StyleProp<ViewStyle>; // Stile per la lista all'interno del modale
-  modalHeight?: DimensionValue;
+  modalHeight?: number;
   lastitemStyle?: StyleProp<ViewStyle>; // Stile per l'ultimo item
 };
 

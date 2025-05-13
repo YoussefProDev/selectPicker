@@ -96,8 +96,7 @@ export const getPickerStyles = (darkMode: boolean = false) => {
       backgroundColor: 'rgba(52, 52, 52, 0.0)',
     },
     modalView: {
-      // Sfondo semitrasparente (puoi modificarlo per chiaro/scuro)
-      marginTop: marginTopByPlatform,
+      paddingTop: marginTopByPlatform,
       padding: 20, // Spazio interno
       paddingBottom: 0,
       marginBottom: 0,

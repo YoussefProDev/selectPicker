@@ -4,8 +4,15 @@ import {
   forwardRef,
   useCallback,
   useMemo,
+  useEffect,
 } from 'react';
-import { View, Modal, useWindowDimensions } from 'react-native';
+import {
+  View,
+  Modal,
+  useWindowDimensions,
+  Platform,
+  Keyboard,
+} from 'react-native';
 import { AnimatePresence, MotiView, useDynamicAnimation } from 'moti';
 import {
   Directions,
@@ -111,6 +118,29 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
 
     const isSectioned = Array.isArray(sections) && sections.length > 0;
 
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    useEffect(() => {
+      const onKeyboardShow = (e: any) =>
+        setKeyboardHeight(e.endCoordinates.height);
+      const onKeyboardHide = () => setKeyboardHeight(0);
+
+      const showEvent =
+        Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+      const hideEvent =
+        Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+      const showListener = Keyboard.addListener(showEvent, onKeyboardShow);
+      const hideListener = Keyboard.addListener(hideEvent, onKeyboardHide);
+
+      return () => {
+        showListener.remove();
+        hideListener.remove();
+      };
+    }, []);
+    const Height = modalStyle?.modalHeight
+      ? modalStyle.modalHeight
+      : windowHeight * 0.9;
     return (
       <View>
         {/* Trigger per aprire il picker */}
@@ -151,15 +181,19 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                   >
                     <View
                       style={[
+                        // { flex: 1 },
                         pageStyle === 'Modal'
                           ? [
                               styles.modalBorders,
                               styles.modalView,
-                              modalStyle?.modalHeight
-                                ? {
-                                    height: modalStyle.modalHeight,
-                                  }
-                                : {},
+                              {
+                                height:
+                                  Platform.OS === 'ios'
+                                    ? Height
+                                    : Height - keyboardHeight < 200
+                                      ? 200
+                                      : Height - keyboardHeight,
+                              },
                               modalStyle?.container,
                             ]
                           : styles.fullPageView,
