@@ -190,9 +190,7 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                                 height:
                                   Platform.OS === 'ios'
                                     ? Height
-                                    : (Height - keyboardHeight )< 200
-                                      ? 200
-                                      : Height - keyboardHeight,
+                                    : Height - keyboardHeight,
                               },
                               modalStyle?.container,
                             ]
