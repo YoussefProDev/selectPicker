@@ -4,14 +4,13 @@ import {
   forwardRef,
   useCallback,
   useMemo,
-  useEffect,
 } from 'react';
 import {
   View,
   Modal,
   useWindowDimensions,
-  Platform,
-  Keyboard,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { AnimatePresence, MotiView, useDynamicAnimation } from 'moti';
 import {
@@ -38,7 +37,7 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
       onClose,
       triggerStyle,
       modalStyle,
-      title,
+      title = 'Select',
       searchPlaceholder,
       textEmpty,
       showCloseButton = true,
@@ -118,26 +117,26 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
 
     const isSectioned = Array.isArray(sections) && sections.length > 0;
 
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    // const [_keyboardHeight, setKeyboardHeight] = useState(0);
 
-    useEffect(() => {
-      const onKeyboardShow = (e: any) =>
-        setKeyboardHeight(e.endCoordinates.height);
-      const onKeyboardHide = () => setKeyboardHeight(0);
+    // useEffect(() => {
+    //   const onKeyboardShow = (e: any) =>
+    //     setKeyboardHeight(e.endCoordinates.height);
+    //   const onKeyboardHide = () => setKeyboardHeight(0);
 
-      const showEvent =
-        Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-      const hideEvent =
-        Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    //   const showEvent =
+    //     Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    //   const hideEvent =
+    //     Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
-      const showListener = Keyboard.addListener(showEvent, onKeyboardShow);
-      const hideListener = Keyboard.addListener(hideEvent, onKeyboardHide);
+    //   const showListener = Keyboard.addListener(showEvent, onKeyboardShow);
+    //   const hideListener = Keyboard.addListener(hideEvent, onKeyboardHide);
 
-      return () => {
-        showListener.remove();
-        hideListener.remove();
-      };
-    }, []);
+    //   return () => {
+    //     showListener.remove();
+    //     hideListener.remove();
+    //   };
+    // }, []);
     const Height = modalStyle?.modalHeight
       ? modalStyle.modalHeight
       : windowHeight * 0.9;
@@ -187,16 +186,41 @@ export const Picker = forwardRef<PickerRef, PickerProps>(
                               styles.modalBorders,
                               styles.modalView,
                               {
-                                height:
-                                  Platform.OS === 'ios'
-                                    ? Height
-                                    : Height - keyboardHeight,
+                                height: Height,
                               },
                               modalStyle?.container,
                             ]
                           : styles.fullPageView,
                       ]}
                     >
+                      <View style={styles.header}>
+                        {showModalTitle && (
+                          <Text
+                            style={[styles.titleModal, modalStyle?.titleStyle]}
+                          >
+                            {title}
+                          </Text>
+                        )}
+                        {showCloseButton && (
+                          <TouchableOpacity
+                            onPress={() => closePicker()}
+                            style={
+                              CloseButton
+                                ? {}
+                                : [
+                                    styles.searchClose,
+                                    modalStyle?.closebuttonStyle,
+                                  ]
+                            }
+                          >
+                            {CloseButton ? (
+                              CloseButton
+                            ) : (
+                              <Text style={styles.btnClose}>✖️</Text>
+                            )}
+                          </TouchableOpacity>
+                        )}
+                      </View>
                       {isSectioned ? (
                         <PickerModalSection
                           selectedItem={selectedItem}

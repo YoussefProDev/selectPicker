@@ -18,19 +18,19 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
   sections,
   renderItem,
   onSelectItem,
-  title = 'Select',
+  // title = 'Select',
   searchPlaceholder = 'Search',
   textEmpty = 'No data available',
   darkMode = false,
   modalStyle,
-  showCloseButton = true,
-  showModalTitle = true,
+  // showCloseButton = true,
+  // showModalTitle = true,
   selectedItem,
   close,
   renderSectionItem,
 
   showSearch,
-  CloseButton,
+  // CloseButton,
 }) => {
   const [search, setSearch] = useState('');
   // Definisci la sezione predefinita con "Empty Data"
@@ -217,29 +217,6 @@ export const PickerModalSection: FC<PickerModalSectionProps> = ({
 
   return (
     <>
-      <View style={styles.header}>
-        {showModalTitle && (
-          <Text style={[styles.titleModal, modalStyle?.titleStyle]}>
-            {title}
-          </Text>
-        )}
-        {showCloseButton && (
-          <TouchableOpacity
-            onPress={() => close()}
-            style={
-              CloseButton
-                ? {}
-                : [styles.searchClose, modalStyle?.closebuttonStyle]
-            }
-          >
-            {CloseButton ? (
-              CloseButton
-            ) : (
-              <Text style={styles.btnClose}>✖️</Text>
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
       {showSearch && (
         <View style={styles.search}>
           <View style={[styles.textInputContainer, modalStyle?.searchStyle]}>
